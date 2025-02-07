@@ -1,5 +1,7 @@
 package com.bgt.billsb.controller;
 
+import com.bgt.billsb.entity.User;
+import com.bgt.billsb.service.UserService;
 import com.bgt.billsb.util.TestUtil;
 import com.bgt.billsb.vo.BillDay;
 import com.bgt.billsb.vo.BillDetail;
@@ -8,6 +10,8 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Side;
 import javafx.scene.chart.PieChart;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +23,8 @@ public class StatisticsController implements TabController {
     //测试数据
     private List<BillDay> datas = new ArrayList<>();
 
+    @Autowired
+    private UserService userService;
 
     @FXML
     private PieChart pieChart;
@@ -26,7 +32,6 @@ public class StatisticsController implements TabController {
     @Override
     public void loadData() {
         datas = TestUtil.getDatas();
-
         //组装数据,按账单类别统计
         ObservableList<PieChart.Data> pieData = FXCollections.observableArrayList();
         //把datas中的BillDetailList都提取到一个集合中
@@ -45,4 +50,6 @@ public class StatisticsController implements TabController {
         pieChart.setLegendSide(Side.LEFT);
         //悬浮展示具体数值
     }
+
+
 }

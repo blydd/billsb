@@ -1,6 +1,8 @@
 package com.bgt.billsb;
 
 import com.bgt.billsb.controller.TabController;
+import com.bgt.billsb.entity.User;
+import com.bgt.billsb.service.UserService;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -8,19 +10,25 @@ import javafx.scene.Scene;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.stage.Stage;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * javafx主类
  */
-public class  JavaFxApplication extends Application {
+public class  JavaFxApplication extends Application{
 
     private Stage stage;
 
-
     @Override
     public void start(Stage stage) throws IOException {
+
+
         this.stage = stage;
         // 创建 TabPane
         TabPane tabPane = new TabPane();
@@ -54,4 +62,6 @@ public class  JavaFxApplication extends Application {
     public static void main(String[] args) {
         launch(args);
     }
+
+
 }

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.VBox?>
+
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml" fx:controller="com.bgt.bill.controller.MainController">
+   <children>
+      <TabPane fx:id="tabPane" prefHeight="32.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE">
+         <tabs>
+            <Tab text="明细">
+               <content>
+                  <fx:include source="bill.fxml" />
+               </content>
+            </Tab>
+            <Tab text="统计">
+               <content>
+                  <fx:include source="statistics.fxml" />
+               </content>
+            </Tab>
+            <Tab text="设置">
+               <content>
+                  <fx:include source="setup.fxml" />
+               </content>
+            </Tab>
+         </tabs>
+      </TabPane>
+   </children>
+</VBox>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml" fx:controller="com.bgt.billsb.controller.BillController">
+   <top>
+      <BorderPane fx:id="top" prefHeight="64.0" prefWidth="600.0" style="-fx-background-color: #62b37a;" BorderPane.alignment="CENTER">
+         <top>
+            <Label text="记账本" BorderPane.alignment="CENTER" />
+         </top>
+         <left>
+            <DatePicker promptText="2025年2月" BorderPane.alignment="CENTER" />
+         </left>
+         <right>
+            <Button mnemonicParsing="false" onMouseClicked="#addBillAction" text="记一笔" BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets right="20.0" />
+               </BorderPane.margin>
+            </Button>
+         </right>
+         <center>
+            <HBox alignment="CENTER" prefHeight="29.0" prefWidth="339.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Label text="总支出¥" />
+                  <Label fx:id="totalOut" text="3364.12" />
+                  <Label text="总入账¥" />
+                  <Label fx:id="totalIn" prefHeight="18.0" prefWidth="41.0" text="524.25" />
+               </children>
+               <opaqueInsets>
+                  <Insets />
+               </opaqueInsets>
+            </HBox>
+         </center>
+      </BorderPane>
+   </top>
+<!--    中间账单列表-->
+   <center>
+      <ListView fx:id="billsListView" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: grey;" BorderPane.alignment="CENTER" />
+   </center>
+
+</BorderPane>

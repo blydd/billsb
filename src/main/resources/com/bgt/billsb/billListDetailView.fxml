@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane prefHeight="60.0" prefWidth="550.0" xmlns:fx="http://javafx.com/fxml">
+   <center>
+      <VBox alignment="CENTER_LEFT" prefHeight="200.0" prefWidth="100.0" BorderPane.alignment="CENTER">
+         <children>
+            <Label fx:id="billType" text="保险" />
+            <Label fx:id="billTimeAndDesc" text="08:20 收到快递第几课" />
+         </children>
+         <padding>
+            <Insets left="10.0" />
+         </padding>
+      </VBox>
+   </center>
+   <right>
+      <Label fx:id="billMoney" text="-180" BorderPane.alignment="CENTER">
+         <padding>
+            <Insets right="10.0" />
+         </padding></Label>
+   </right>
+   <left>
+      <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
+         <image>
+            <Image url="@../../../img/baoxian.png" />
+         </image>
+      </ImageView>
+   </left>
+</BorderPane>

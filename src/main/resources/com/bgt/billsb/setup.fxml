@@ -1,14 +1,177 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.Tab?>
-<?import javafx.scene.control.TabPane?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml"  fx:controller="com.bgt.billsb.controller.SetupController">
-
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bgt.billsb.controller.SetupController">
+   <top>
+      <VBox spacing="10.0" BorderPane.alignment="CENTER_LEFT">
+         <children>
+            <Label alignment="CENTER" prefHeight="39.0" prefWidth="602.0" text="分类管理">
+               <font>
+                  <Font size="32.0" />
+               </font>
+               <VBox.margin>
+                  <Insets top="20.0" />
+               </VBox.margin>
+            </Label>
+            <HBox alignment="CENTER" prefHeight="50.0" prefWidth="200.0" spacing="50.0">
+               <children>
+                  <ToggleButton fx:id="outBtn" mnemonicParsing="false" text="支出" />
+                  <ToggleButton fx:id="inBtn" mnemonicParsing="false" text="入账" textAlignment="CENTER" />
+                  <ToggleButton fx:id="notBtn" mnemonicParsing="false" text="不计入收支" />
+               </children>
+               <padding>
+                  <Insets left="20.0" top="10.0" />
+               </padding>
+            </HBox>
+            <HBox spacing="10.0">
+               <padding>
+                  <Insets left="20.0" />
+               </padding>
+            </HBox>
+         </children>
+      </VBox>
+   </top>
    <center>
-      <Label text="setup" BorderPane.alignment="CENTER" />
+      <!--             分类-->
+      <GridPane fx:id="typePane" alignment="CENTER" hgap="30.0" maxHeight="307.0" maxWidth="601.0" prefHeight="307.0" prefWidth="600.0" vgap="30.0">
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="60.0" minWidth="10.0" prefWidth="20.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="60.0" minWidth="10.0" prefWidth="60.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="60.0" minWidth="10.0" prefWidth="60.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="60.0" minWidth="10.0" prefWidth="60.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="60.0" minWidth="10.0" prefWidth="60.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="60.0" minWidth="10.0" prefWidth="60.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+         <padding>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </padding>
+         <children>
+            <VBox prefHeight="200.0" prefWidth="100.0">
+               <children>
+                  <Region prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: green;" />
+                  <Label text="Label" />
+               </children>
+            </VBox>
+            <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
+               <children>
+                  <Region prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: green;" />
+                  <Label text="Label" />
+               </children>
+            </VBox>
+            <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="2">
+               <children>
+                  <Region prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: green;" />
+                  <Label text="Label" />
+               </children>
+            </VBox>
+            <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="3">
+               <children>
+                  <Region prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: green;" />
+                  <Label text="Label" />
+               </children>
+            </VBox>
+            <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="4">
+               <children>
+                  <Region prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: green;" />
+                  <Label text="Label" />
+               </children>
+            </VBox>
+            <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="5">
+               <children>
+                  <Region prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: green;" />
+                  <Label text="Label" />
+               </children>
+            </VBox>
+            <VBox prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="1">
+               <children>
+                  <Region prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: green;" />
+                  <Label text="Label" />
+               </children>
+            </VBox>
+            <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <children>
+                  <Region prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: green;" />
+                  <Label text="Label" />
+               </children>
+            </VBox>
+            <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
+               <children>
+                  <Region prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: green;" />
+                  <Label text="Label" />
+               </children>
+            </VBox>
+            <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="3" GridPane.rowIndex="1">
+               <children>
+                  <Region prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: green;" />
+                  <Label text="Label" />
+               </children>
+            </VBox>
+            <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="4" GridPane.rowIndex="1">
+               <children>
+                  <Region prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: green;" />
+                  <Label text="Label" />
+               </children>
+            </VBox>
+            <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="5" GridPane.rowIndex="1">
+               <children>
+                  <Region prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: green;" />
+                  <Label text="Label" />
+               </children>
+            </VBox>
+            <VBox prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="2">
+               <children>
+                  <Region prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: green;" />
+                  <Label text="Label" />
+               </children>
+            </VBox>
+            <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+               <children>
+                  <Region prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: green;" />
+                  <Label text="Label" />
+               </children>
+            </VBox>
+            <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
+               <children>
+                  <Region prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: green;" />
+                  <Label text="Label" />
+               </children>
+            </VBox>
+            <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="3" GridPane.rowIndex="2">
+               <children>
+                  <Region prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: green;" />
+                  <Label text="Label" />
+               </children>
+            </VBox>
+            <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="4" GridPane.rowIndex="2">
+               <children>
+                  <Region prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: green;" />
+                  <Label text="Label" />
+               </children>
+            </VBox>
+            <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="5" GridPane.rowIndex="2">
+               <children>
+                  <Region prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: green;" />
+                  <Label text="Label" />
+               </children>
+            </VBox>
+         </children>
+      </GridPane>
    </center>
+
 </BorderPane>

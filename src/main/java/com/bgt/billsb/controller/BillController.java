@@ -6,22 +6,37 @@ import com.bgt.billsb.vo.BillDay;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class BillController implements TabController{
 
-//    private UserDao userDao = new UserDao();
     @FXML
     private ListView billsListView;
     //测试数据
     private List<BillDay> datas = new ArrayList<>();
+    /**
+     * 点击"记一笔"按钮
+     */
     @FXML
-    private void addBillAction() {
+    private void addBillAction() throws IOException {
+        Stage newbillStage = new Stage();
+        newbillStage.setTitle("记一笔");
 
+        newbillStage.initModality(Modality.APPLICATION_MODAL);
+
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/com/bgt/billsb/newbill.fxml"));
+
+        newbillStage.setScene(new Scene(fxmlLoader.load()));
+        newbillStage.show();
     }
 
     @Override

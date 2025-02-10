@@ -1,7 +1,7 @@
 package com.bgt.billsb;
 
-import com.bgt.billsb.entity.User;
-import com.bgt.billsb.service.UserService;
+import com.bgt.billsb.entity.Bill;
+import com.bgt.billsb.service.BillService;
 import javafx.application.Application;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,13 +27,13 @@ public class BillSbApplication implements CommandLineRunner {
     }
 
     @Autowired
-    private UserService userService;
+    private BillService billService;
     @Override
     public void run(String... args) throws Exception {
         System.out.println("StatisticsController.run");
 
 
-        List<User> allUsers = userService.getAllUsers();
+        List<Bill> allUsers = billService.getAll();
         System.out.println("allUsers = " + allUsers.size());
     }
 }

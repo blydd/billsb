@@ -1,7 +1,6 @@
 package com.bgt.billsb.controller;
 
-import com.bgt.billsb.entity.User;
-import com.bgt.billsb.service.UserService;
+import com.bgt.billsb.service.BillService;
 import com.bgt.billsb.util.TestUtil;
 import com.bgt.billsb.vo.BillDay;
 import com.bgt.billsb.vo.BillDetail;
@@ -11,7 +10,6 @@ import javafx.fxml.FXML;
 import javafx.geometry.Side;
 import javafx.scene.chart.PieChart;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +22,7 @@ public class StatisticsController implements TabController {
     private List<BillDay> datas = new ArrayList<>();
 
     @Autowired
-    private UserService userService;
+    private BillService billService;
 
     @FXML
     private PieChart pieChart;

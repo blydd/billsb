@@ -3,6 +3,7 @@ package com.bgt.billsb.cell;
 import com.bgt.billsb.vo.BillDay;
 import com.bgt.billsb.vo.BillDetail;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
@@ -27,7 +28,20 @@ public class BillCell extends ListCell<BillDay> {
     public BillCell(List<BillDay> datas) {
         this.datas = datas;
     }
-
+    ObservableList<BillDetail> observableBillList;
+    ListView billsDetail;
+    /**
+     * 初始化方法
+     */
+    public void initialize() {
+        // 监听列表数据变化 未生效
+        observableBillList.addListener(new ListChangeListener<BillDetail>() {
+            @Override
+            public void onChanged(Change<? extends BillDetail> c) {
+                adjustListViewHeight(billsDetail);
+            }
+        });
+    }
     @Override
     protected void updateItem(BillDay billDay, boolean empty) {
         super.updateItem(billDay, empty);
@@ -50,12 +64,11 @@ public class BillCell extends ListCell<BillDay> {
                 mainRoot.getChildren().addAll(dayView);
 
                 /*再使用一个listView展示每日账单列表*/
-                ObservableList<BillDetail> observableBillList = FXCollections.observableArrayList(billDay.getBillDetailList());
-                ListView billsDetail = (ListView) dayView.lookup("#billsDetail");
+                observableBillList = FXCollections.observableArrayList(billDay.getBillDetailList());
+                billsDetail = (ListView) dayView.lookup("#billsDetail");
                 billsDetail.getItems().addAll(observableBillList);
                 billsDetail.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
                 billsDetail.setCellFactory(d->new BillDetailCell(billDay.getBillDetailList()));
-
 
                 //添加每日账单列表
                 mainRoot.getChildren().addAll(billsDetail);
@@ -63,6 +76,22 @@ public class BillCell extends ListCell<BillDay> {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
+        }
+    }
+    private void adjustListViewHeight(ListView<BorderPane> listView) {
+        // 获取列表项数量
+        int itemCount = listView.getItems().size();
+        if (itemCount > 0) {
+            // 获取第一个单元格的高度
+            ListCell<BorderPane> sampleCell = (ListCell<BorderPane>) listView.getCellFactory().call(listView);
+//            sampleCell.updateItem(listView.getItems().get(0), false);
+//            sampleCell.applyCss();
+//            sampleCell.layout();
+            double cellHeight = sampleCell.getHeight();
+            // 计算所需的总高度
+            double totalHeight = itemCount * cellHeight;
+            // 设置 ListView 的高度
+            listView.setPrefHeight(totalHeight);
         }
     }
 }

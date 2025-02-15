@@ -1,6 +1,7 @@
 package com.bgt.billsb.cell;
 
 import com.bgt.billsb.vo.BillDetail;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
@@ -23,6 +24,7 @@ public class BillDetailCell extends ListCell<BillDetail> {
         this.datas = datas;
     }
 
+
     @Override
     protected void updateItem(BillDetail billDetail, boolean empty) {
         super.updateItem(billDetail, empty);
@@ -38,7 +40,7 @@ public class BillDetailCell extends ListCell<BillDetail> {
                     Label billTimeAndDesc = (Label) billView.lookup("#billTimeAndDesc");
                     Label billMoney = (Label) billView.lookup("#billMoney");
                     billType.setText(billDetail.getBillType());
-                    billTimeAndDesc.setText(billDetail.getTime().concat("  ").concat(billDetail.getDesc()));
+                    billTimeAndDesc.setText(billDetail.getBillTime().concat("  ").concat(billDetail.getDesc()));
                     billMoney.setText(String.valueOf(billDetail.getMoney()));
 
                     setGraphic(billView);

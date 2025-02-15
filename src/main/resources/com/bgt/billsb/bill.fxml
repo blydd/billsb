@@ -5,14 +5,10 @@
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.Tab?>
-<?import javafx.scene.control.TabPane?>
-<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 
-
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml" fx:controller="com.bgt.billsb.controller.BillController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/23.0.1" fx:controller="com.bgt.billsb.controller.BillController">
    <top>
       <BorderPane fx:id="top" prefHeight="64.0" prefWidth="600.0" style="-fx-background-color: #62b37a;" BorderPane.alignment="CENTER">
          <top>
@@ -45,7 +41,7 @@
    </top>
 <!--    中间账单列表-->
    <center>
-      <ListView fx:id="billsListView" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: grey;" BorderPane.alignment="CENTER" />
+      <ListView fx:id="billsListView" prefWidth="200.0" style="-fx-background-color: grey;" BorderPane.alignment="CENTER" />
    </center>
 
 </BorderPane>

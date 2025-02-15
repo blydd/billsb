@@ -1,21 +1,35 @@
 package com.bgt.billsb.service.impl;
+import com.bgt.billsb.dao.BillDao;
 import com.bgt.billsb.entity.Bill;
-import com.bgt.billsb.mapper.BillMapper;
 import com.bgt.billsb.service.BillService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.bgt.billsb.vo.BillDetail;
+import com.bgt.billsb.vo.BillTypeVo;
+import com.bgt.billsb.vo.PayTypeVo;
 
 import java.util.List;
 
 
-@Service
 public class BillServiceImpl implements BillService {
 
-    @Autowired
-    private BillMapper billMapper;
+    private final BillDao billDao = new BillDao();
 
     @Override
-    public List<Bill> getAll() {
-        return billMapper.selectList(null);
+    public List<BillDetail> getAll() {
+        return billDao.getAllBills();
+    }
+
+    @Override
+    public List<BillTypeVo> getBillTypes() {
+        return billDao.getBillTypes();
+    }
+
+    @Override
+    public List<PayTypeVo> getPayTypes() {
+        return billDao.getPayTypes();
+    }
+
+    @Override
+    public void addBill(Bill newBill) {
+        billDao.addBill(newBill);
     }
 }

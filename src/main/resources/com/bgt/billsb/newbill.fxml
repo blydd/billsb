@@ -2,8 +2,10 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Spinner?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.ToggleButton?>
@@ -11,7 +13,6 @@
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
@@ -20,12 +21,20 @@
    <top>
       <VBox spacing="10.0" BorderPane.alignment="CENTER_LEFT">
          <children>
-            <HBox prefHeight="50.0" prefWidth="200.0" spacing="10.0">
+            <HBox alignment="CENTER" prefHeight="50.0" prefWidth="200.0" spacing="10.0">
                <children>
-                  <ToggleButton fx:id="outBtn" mnemonicParsing="false" prefHeight="26.0" prefWidth="102.0" text="支出" />
-                  <ToggleButton fx:id="inBtn" mnemonicParsing="false" prefHeight="26.0" prefWidth="106.0" text="入账" textAlignment="CENTER" />
-                  <ToggleButton fx:id="notBtn" mnemonicParsing="false" text="不计入收支" />
-                  <DatePicker fx:id="billTime" prefHeight="26.0" prefWidth="172.0" />
+                  <ToggleButton fx:id="outBtn" mnemonicParsing="false" prefHeight="26.0" prefWidth="60.0" text="支出" />
+                  <ToggleButton fx:id="inBtn" mnemonicParsing="false" prefHeight="26.0" prefWidth="60.0" text="入账" textAlignment="CENTER" />
+                  <ToggleButton fx:id="notBtn" mnemonicParsing="false" prefWidth="60.0" text="不计入收支" />
+                  <DatePicker fx:id="billTime" prefHeight="26.0" prefWidth="121.0" />
+                  <Spinner fx:id="hour" editable="true" prefWidth="80.0" />
+                  <Spinner fx:id="min" editable="true" prefWidth="80.0" />
+                  <Spinner fx:id="sec" editable="true" prefWidth="80.0" />
+                  <Button fx:id="saveBtn" mnemonicParsing="false" onAction="#saveAction" prefHeight="53.0" prefWidth="117.0" text="保存">
+                     <font>
+                        <Font name="System Bold" size="28.0" />
+                     </font>
+                  </Button>
                </children>
                <padding>
                   <Insets left="20.0" top="10.0" />
@@ -38,7 +47,7 @@
                         <Font name="System Bold" size="50.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="billMoney" prefHeight="40.0" prefWidth="475.0" promptText="input the money">
+                  <TextField fx:id="money" prefHeight="40.0" prefWidth="475.0" promptText="input the money">
                      <cursor>
                         <Cursor fx:constant="DEFAULT" />
                      </cursor>
@@ -56,8 +65,13 @@
    <center>
       <VBox spacing="20.0" BorderPane.alignment="CENTER">
          <children>
+            <Label text="账单类型:">
+               <font>
+                  <Font name="System Bold" size="25.0" />
+               </font>
+            </Label>
 <!--             分类-->
-            <GridPane fx:id="typePane" alignment="CENTER" hgap="30.0" maxHeight="307.0" maxWidth="601.0" prefHeight="307.0" prefWidth="600.0" vgap="30.0">
+            <GridPane fx:id="billTypePane" alignment="CENTER" hgap="30.0" maxHeight="307.0" maxWidth="601.0" prefHeight="307.0" prefWidth="600.0" vgap="30.0">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="60.0" minWidth="10.0" prefWidth="20.0" />
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="60.0" minWidth="10.0" prefWidth="60.0" />
@@ -74,121 +88,32 @@
                <padding>
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </padding>
-               <children>
-                  <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
-                     <children>
-                        <Region prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: green;" />
-                        <Label contentDisplay="CENTER" prefHeight="17.0" prefWidth="15.0" text="衣" />
-                     </children>
-                  </VBox>
-                  <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1">
-                     <children>
-                        <Region prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: green;" />
-                        <Label text="Label" />
-                     </children>
-                  </VBox>
-                  <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="2">
-                     <children>
-                        <Region prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: green;" />
-                        <Label text="Label" />
-                     </children>
-                  </VBox>
-                  <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="3">
-                     <children>
-                        <Region prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: green;" />
-                        <Label text="Label" />
-                     </children>
-                  </VBox>
-                  <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="4">
-                     <children>
-                        <Region prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: green;" />
-                        <Label text="Label" />
-                     </children>
-                  </VBox>
-                  <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="5">
-                     <children>
-                        <Region prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: green;" />
-                        <Label text="Label" />
-                     </children>
-                  </VBox>
-                  <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="1">
-                     <children>
-                        <Region prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: green;" />
-                        <Label text="Label" />
-                     </children>
-                  </VBox>
-                  <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                     <children>
-                        <Region prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: green;" />
-                        <Label text="Label" />
-                     </children>
-                  </VBox>
-                  <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
-                     <children>
-                        <Region prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: green;" />
-                        <Label text="Label" />
-                     </children>
-                  </VBox>
-                  <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="3" GridPane.rowIndex="1">
-                     <children>
-                        <Region prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: green;" />
-                        <Label text="Label" />
-                     </children>
-                  </VBox>
-                  <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="4" GridPane.rowIndex="1">
-                     <children>
-                        <Region prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: green;" />
-                        <Label text="Label" />
-                     </children>
-                  </VBox>
-                  <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="5" GridPane.rowIndex="1">
-                     <children>
-                        <Region prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: green;" />
-                        <Label text="Label" />
-                     </children>
-                  </VBox>
-                  <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.rowIndex="2">
-                     <children>
-                        <Region prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: green;" />
-                        <Label text="Label" />
-                     </children>
-                  </VBox>
-                  <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
-                     <children>
-                        <Region prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: green;" />
-                        <Label text="Label" />
-                     </children>
-                  </VBox>
-                  <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="2" GridPane.rowIndex="2">
-                     <children>
-                        <Region prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: green;" />
-                        <Label text="Label" />
-                     </children>
-                  </VBox>
-                  <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="3" GridPane.rowIndex="2">
-                     <children>
-                        <Region prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: green;" />
-                        <Label text="Label" />
-                     </children>
-                  </VBox>
-                  <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="4" GridPane.rowIndex="2">
-                     <children>
-                        <Region prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: green;" />
-                        <Label text="Label" />
-                     </children>
-                  </VBox>
-                  <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="5" GridPane.rowIndex="2">
-                     <children>
-                        <Region prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: green;" />
-                        <Label text="Label" />
-                     </children>
-                  </VBox>
-               </children>
             </GridPane>
-            <TextArea fx:id="remark" prefHeight="269.0" prefWidth="560.0" promptText="备注...">
+            <Label text="支付方式:">
+               <font>
+                  <Font name="System Bold" size="25.0" />
+               </font>
+            </Label>
+            <GridPane fx:id="payTypePane" alignment="CENTER" hgap="30.0" maxHeight="307.0" maxWidth="601.0" prefHeight="307.0" prefWidth="600.0" vgap="30.0">
+               <columnConstraints>
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="60.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="60.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="60.0" prefWidth="100.0" />
+               </columnConstraints>
+               <rowConstraints>
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+               </rowConstraints>
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
+            </GridPane>
+            <TextArea fx:id="remark" prefHeight="64.0" prefWidth="560.0" promptText="备注...">
                <VBox.margin>
                   <Insets left="20.0" right="20.0" />
-               </VBox.margin></TextArea>
+               </VBox.margin>
+            </TextArea>
          </children>
          <BorderPane.margin>
             <Insets top="20.0" />

@@ -33,6 +33,23 @@ public class  JavaFxApplication extends Application{
 
         tabPane.getTabs().addAll(tab1, tab2, tab3);
 
+        // 监听 TabPane 的选择变化,每次切换都重新加载
+        tabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                try {
+                    if (newValue == tab1) {
+                       reloadTab(tab1,"/com/bgt/billsb/bill.fxml");
+                    } else if (newValue == tab2) {
+                        reloadTab(tab2,"/com/bgt/billsb/statistics.fxml");
+                    } else if (newValue == tab3) {
+                        reloadTab(tab3,"/com/bgt/billsb/setup.fxml");
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
         Scene scene = new Scene(tabPane, 600, 900);
         stage.setTitle("记账本!");
         stage.setScene(scene);
@@ -50,6 +67,11 @@ public class  JavaFxApplication extends Application{
             ((TabController) controller).loadData();
         }
         return tab;
+    }
+    private void reloadTab(Tab tab, String fxmlPath) throws IOException {
+        // 加载 FXML 文件并设置为 Tab 的内容
+        FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+        tab.setContent((Node) loader.load());
     }
 
     public static void main(String[] args) {

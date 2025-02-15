@@ -1,2 +1,2 @@
 # billsb
-javafx整合springboot的记账本项目
+javafx记账本项目

@@ -3,7 +3,7 @@
  * @Date: 2025/2/11 13:22
  * @Desc:
  */
-module billSB {
+open module billSB {
     // 导入java.sql模块，用于数据库操作
     requires java.sql;
     // 导入javafx.fxml模块，用于处理FXML文件
@@ -13,11 +13,14 @@ module billSB {
     // 导入javafx.graphics模块，用于处理JavaFX图形
     requires javafx.graphics;
     requires java.desktop;
+    requires cn.hutool;
+    requires com.google.common;
     // 导出com.bgt.billsb包到javafx.graphics模块，允许javafx.graphics模块使用com.bgt.billsb包中的类
     exports com.bgt.billsb to javafx.graphics;
     // 导出com.bgt.billsb.controller包到javafx.fxml模块，允许javafx.fxml模块使用com.bgt.billsb.controller包中的类
     exports com.bgt.billsb.controller to javafx.fxml;
+    exports com.bgt.billsb.eenum to javafx.graphics;
     // 打开com.bgt.billsb.controller包到javafx.fxml模块，允许javafx.fxml模块使用com.bgt.billsb.controller包中的类
-    opens com.bgt.billsb.controller to javafx.fxml;
+//    opens com.bgt.billsb.controller to javafx.fxml,com.google.common;
 
 }

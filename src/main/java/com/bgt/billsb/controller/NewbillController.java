@@ -3,13 +3,12 @@ package com.bgt.billsb.controller;
 import com.bgt.billsb.entity.Bill;
 import com.bgt.billsb.service.BillService;
 import com.bgt.billsb.service.impl.BillServiceImpl;
-import com.bgt.billsb.vo.BillDay;
+import com.bgt.billsb.util.ControllerManager;
 import com.bgt.billsb.vo.BillTypeVo;
 import com.bgt.billsb.vo.PayTypeVo;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.concurrent.Service;
-import javafx.concurrent.Task;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
@@ -17,21 +16,20 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
-import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+/**
+ * 新建账单 控制器
+ */
 public class NewbillController{
     private final BillService billService = new BillServiceImpl();
     private Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -80,14 +78,14 @@ public class NewbillController{
     private Button saveBtn;
     //初始化方法，会在 FXML 加载时自动调用
     public void initialize() {
-        //查询最新账单类别及支付类别
-        loadDataAsync();
-
+        ControllerManager.setController("newbill",this);
+        //设置账单时间
         hour.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 23, 0));
         min.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0));
         sec.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0));
 
 
+        //点击收入或支出按钮
         inBtn.setOnMouseClicked(this::handleInout);
 
         //监听金额只能输入数字和小数点
@@ -102,6 +100,10 @@ public class NewbillController{
         });
     }
 
+    /**
+     * 点击收入或支出按钮时修改样式
+     * @param mouseEvent
+     */
     private void handleInout(MouseEvent mouseEvent) {
         ToggleButton clickedInout = (ToggleButton) mouseEvent.getSource();
         // 取消之前选中的 VBox 的选中状态
@@ -114,109 +116,6 @@ public class NewbillController{
     }
 
 
-    //测试数据
-    private List<BillDay> datas = new ArrayList<>();
-
-    /**
-     * 异步加载数据
-     */
-    private void loadDataAsync() {
-        //加载账单类型
-        Service<List<BillTypeVo>> dataService = new Service<>() {
-            @Override
-            protected Task<List<BillTypeVo>> createTask() {
-                return new Task<>() {
-                    @Override
-                    protected List<BillTypeVo> call() {
-                        return billService.getBillTypes();
-                    }
-                };
-            }
-        };
-        dataService.setOnSucceeded(e -> {
-                //查询完毕后把数据转成页面所需格式
-                List<BillTypeVo> value = dataService.getValue();
-                this.billTypeList = value;
-                //塞入账单类型pane
-                billTypePane.getChildren().clear();
-                int colIndex = 0 ;
-                int rowIndex = 0 ;
-            for (BillTypeVo billTypeVo : value) {
-                VBox vBox = new VBox();
-                System.out.println("billTypeVo.getIcon():"+billTypeVo.getIcon());
-                ImageView iconView = new ImageView(new Image(getClass().getResource("/img/" + billTypeVo.getIcon() + ".png").toExternalForm()));
-                iconView.setFitWidth(60);
-                iconView.setFitHeight(60);
-                vBox.getChildren().add(iconView);
-
-                Label label = new Label(billTypeVo.getBillType());
-                label.setFont(Font.font(17));
-                label.setPrefHeight(17);
-                label.setMinWidth(15);
-                vBox.getChildren().add(label);
-
-                vBox.setAlignment(Pos.CENTER);
-
-                //给每个vbox添加点击事件
-                vBox.setOnMouseClicked(this::handleVboxClick);
-
-                billTypePane.add(vBox,colIndex,rowIndex);
-
-                colIndex++;
-                if (colIndex == 6) {
-                    colIndex = 0;
-                    rowIndex++;
-                }
-            }
-
-                System.out.println("查询到数据的账单数量 = " + value.size());
-            }
-        );
-        dataService.start();
-
-
-        //加载支付类型
-        Service<List<PayTypeVo>> dataService2 = new Service<>() {
-            @Override
-            protected Task<List<PayTypeVo>> createTask() {
-                return new Task<>() {
-                    @Override
-                    protected List<PayTypeVo> call() {
-                        return billService.getPayTypes();
-                    }
-                };
-            }
-        };
-        dataService2.setOnSucceeded(e -> {
-                //查询完毕后把数据转成页面所需格式
-                List<PayTypeVo> value = dataService2.getValue();
-                this.payTypeList = value;
-                //塞入账单类型pane
-                payTypePane.getChildren().clear();
-                int colIndex = 0 ;
-                int rowIndex = 0 ;
-            for (PayTypeVo billTypeVo : value) {
-                Button button = new Button(billTypeVo.getPayAccountName());
-                button.setPrefWidth(100);
-                button.setMaxWidth(Double.MAX_VALUE);
-                button.setStyle("-fx-wrap-text: true");
-                //给每个button添加点击事件
-                button.setOnMouseClicked(this::handleButtonClick);
-
-                payTypePane.add(button,colIndex,rowIndex);
-
-                colIndex++;
-                if (colIndex == 3) {
-                    colIndex = 0;
-                    rowIndex++;
-                }
-            }
-
-                System.out.println("查询到数据的账单数量 = " + value.size());
-            }
-        );
-        dataService2.start();
-    }
 
     /**
      * 处理支付方式的选中事件
@@ -321,5 +220,72 @@ public class NewbillController{
         Stage window = (Stage) billTime.getScene().getWindow();
         window.close();
 
+    }
+
+
+
+
+    /**
+     * 渲染支付方式
+     * @param value
+     */
+    public void loadPayType(ObservableList<PayTypeVo> value) {
+        this.payTypeList = value;
+        payTypePane.getChildren().clear();
+        int colIndex = 0 ;
+        int rowIndex = 0 ;
+        for (PayTypeVo billTypeVo : value) {
+            Button button = new Button(billTypeVo.getPayAccountName());
+            button.setPrefWidth(100);
+            button.setMaxWidth(Double.MAX_VALUE);
+            button.setStyle("-fx-wrap-text: true");
+            //给每个button添加点击事件
+            button.setOnMouseClicked(this::handleButtonClick);
+
+            payTypePane.add(button,colIndex,rowIndex);
+
+            colIndex++;
+            if (colIndex == 3) {
+                colIndex = 0;
+                rowIndex++;
+            }
+        }
+    }
+    /**
+     * 渲染账单类型
+     * @param value
+     */
+    public void loadBillType(ObservableList<BillTypeVo> value) {
+        this.billTypeList = value;
+        billTypePane.getChildren().clear();
+        int colIndex = 0 ;
+        int rowIndex = 0 ;
+        for (BillTypeVo billTypeVo : value) {
+            VBox vBox = new VBox();
+            System.out.println("billTypeVo.getIcon():"+billTypeVo.getIcon());
+            ImageView iconView = new ImageView(new Image(getClass().getResource("/img/" + billTypeVo.getIcon() + ".png").toExternalForm()));
+            iconView.setFitWidth(60);
+            iconView.setFitHeight(60);
+            vBox.getChildren().add(iconView);
+
+            Label label = new Label(billTypeVo.getBillType());
+            label.setFont(Font.font(17));
+            label.setPrefHeight(17);
+            label.setMinWidth(15);
+            vBox.getChildren().add(label);
+
+            vBox.setAlignment(Pos.CENTER);
+
+            //给每个vbox添加点击事件
+            vBox.setOnMouseClicked(this::handleVboxClick);
+
+            billTypePane.add(vBox,colIndex,rowIndex);
+
+            colIndex++;
+            if (colIndex == 6) {
+                colIndex = 0;
+                rowIndex++;
+            }
+        }
     }
 }

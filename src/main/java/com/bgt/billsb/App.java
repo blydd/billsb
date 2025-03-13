@@ -1,6 +1,6 @@
 package com.bgt.billsb;
 
-import com.bgt.billsb.controller.TabController;
+import com.bgt.billsb.util.DataUtil;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -14,15 +14,11 @@ import java.io.IOException;
 /**
  * javafx主类
  */
-public class  JavaFxApplication extends Application{
+public class App extends Application{
 
-    private Stage stage;
 
     @Override
     public void start(Stage stage) throws IOException {
-
-
-        this.stage = stage;
         // 创建 TabPane
         TabPane tabPane = new TabPane();
 
@@ -34,26 +30,28 @@ public class  JavaFxApplication extends Application{
         tabPane.getTabs().addAll(tab1, tab2, tab3);
 
         // 监听 TabPane 的选择变化,每次切换都重新加载
-        tabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                try {
-                    if (newValue == tab1) {
-                       reloadTab(tab1,"/com/bgt/billsb/bill.fxml");
-                    } else if (newValue == tab2) {
-                        reloadTab(tab2,"/com/bgt/billsb/statistics.fxml");
-                    } else if (newValue == tab3) {
-                        reloadTab(tab3,"/com/bgt/billsb/setup.fxml");
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+//        tabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+//            if (newValue != null) {
+//                try {
+//                    if (newValue == tab1) {
+//                       reloadTab(tab1,"/com/bgt/billsb/bill.fxml");
+//                    } else if (newValue == tab2) {
+//                        reloadTab(tab2,"/com/bgt/billsb/statistics.fxml");
+//                    } else if (newValue == tab3) {
+//                        reloadTab(tab3,"/com/bgt/billsb/setup.fxml");
+//                    }
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
 
         Scene scene = new Scene(tabPane, 600, 900);
         stage.setTitle("记账本!");
         stage.setScene(scene);
         stage.show();
+
+        DataUtil.queryData();
     }
     private Tab createTab(String tabTitle, String fxmlPath) throws IOException {
         Tab tab = new Tab(tabTitle);
@@ -62,10 +60,10 @@ public class  JavaFxApplication extends Application{
         tab.setContent((Node) loader.load());
 
         // 获取控制器实例并调用加载数据的方法
-        Object controller = loader.getController();
-        if (controller instanceof TabController) {
-            ((TabController) controller).loadData();
-        }
+//        Object controller = loader.getController();
+//        if (controller instanceof TabController) {
+//            ((TabController) controller).loadData();
+//        }
         return tab;
     }
     private void reloadTab(Tab tab, String fxmlPath) throws IOException {

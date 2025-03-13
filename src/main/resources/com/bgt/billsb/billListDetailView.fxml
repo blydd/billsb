@@ -30,7 +30,7 @@
                   <Insets right="10.0" />
                </padding>
             </Label>
-            <Button graphicTextGap="6.0" mnemonicParsing="false" onAction="#onDelBillAction" text="删除" textFill="#e10c0c" textOverrun="WORD_ELLIPSIS">
+            <Button graphicTextGap="6.0" mnemonicParsing="false"  text="删除" textFill="#e10c0c" textOverrun="WORD_ELLIPSIS">
                <font>
                   <Font name="System Bold" size="13.0" />
                </font>

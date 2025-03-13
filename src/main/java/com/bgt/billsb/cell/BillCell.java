@@ -23,25 +23,8 @@ import java.util.List;
  */
 public class BillCell extends ListCell<BillDay> {
 
-    private List<BillDay> datas;
-    //通过构造方法把数据传来
-    public BillCell(List<BillDay> datas) {
-        this.datas = datas;
-    }
     ObservableList<BillDetail> observableBillList;
-    ListView billsDetail;
-    /**
-     * 初始化方法
-     */
-    public void initialize() {
-        // 监听列表数据变化 未生效
-        observableBillList.addListener(new ListChangeListener<BillDetail>() {
-            @Override
-            public void onChanged(Change<? extends BillDetail> c) {
-                adjustListViewHeight(billsDetail);
-            }
-        });
-    }
+
     @Override
     protected void updateItem(BillDay billDay, boolean empty) {
         super.updateItem(billDay, empty);
@@ -65,7 +48,8 @@ public class BillCell extends ListCell<BillDay> {
 
                 /*再使用一个listView展示每日账单列表*/
                 observableBillList = FXCollections.observableArrayList(billDay.getBillDetailList());
-                billsDetail = (ListView) dayView.lookup("#billsDetail");
+                ListView billsDetail = (ListView) dayView.lookup("#billsDetail");
+                billsDetail.getItems().clear();
                 billsDetail.getItems().addAll(observableBillList);
                 billsDetail.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
                 billsDetail.setCellFactory(d->new BillDetailCell(billDay.getBillDetailList()));

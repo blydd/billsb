@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.VBox?>
 
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml" fx:controller="com.bgt.bill.controller.MainController">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml" fx:controller="com.bgt.billsb.controller.MainController">
    <children>
       <TabPane fx:id="tabPane" prefHeight="32.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE">
          <tabs>

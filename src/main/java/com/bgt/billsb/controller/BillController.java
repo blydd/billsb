@@ -1,88 +1,50 @@
 package com.bgt.billsb.controller;
 
-import com.bgt.billsb.cell.BillCell;
-import com.bgt.billsb.service.BillService;
-import com.bgt.billsb.service.impl.BillServiceImpl;
+import com.bgt.billsb.cell.BillDetailCell;
+import com.bgt.billsb.dto.ResultEvent;
+import com.bgt.billsb.util.ControllerManager;
+import com.bgt.billsb.util.DataUtil;
+import com.bgt.billsb.util.EventBusUtil;
 import com.bgt.billsb.vo.BillDay;
 import com.bgt.billsb.vo.BillDetail;
+import com.bgt.billsb.vo.BillTypeVo;
+import com.bgt.billsb.vo.PayTypeVo;
+import com.google.common.eventbus.Subscribe;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.concurrent.Service;
-import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.Window;
-import javafx.util.Callback;
 
 import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
 
-public class BillController implements TabController {
+/**
+ * 账单 控制器
+ */
+public class BillController {
 
     @FXML
     private ListView billsListView;
-    //账单数据
-    public static List<BillDay> datas = new ArrayList<>();
 
 
-    private final BillService billService = new BillServiceImpl();
 
     /**
      * 初始化方法
      */
-    public void initialize() {
-        loadDataAsync();
-    }
+    public void initialize() throws IOException {
+        //注册事件总线
+        EventBusUtil.getDefaut().register(this);
 
-    /**
-     * 异步加载数据
-     */
-    private void loadDataAsync() {
-        Service<List<BillDetail>> dataService = new Service<>() {
-            @Override
-            protected Task<List<BillDetail>> createTask() {
-                return new Task<>() {
-                    @Override
-                    protected List<BillDetail> call() {
-                        return billService.getAll();
-                    }
-                };
-            }
-        };
-
-        dataService.setOnSucceeded(e -> {
-                    //查询完毕后把数据转成页面所需格式
-                    List<BillDetail> value = dataService.getValue();
-
-                    Map<String, List<BillDetail>> groupByBilltime = value.stream().map(bi->{
-                        bi.setBillDay(bi.getBillTime().split(" ")[0]);
-                        return bi;
-                    }).collect(Collectors.groupingBy(a -> a.getBillDay()));
-                    Iterator<Map.Entry<String, List<BillDetail>>> it = groupByBilltime.entrySet().iterator();
-                    while (it.hasNext()) {
-                        Map.Entry<String, List<BillDetail>> next = it.next();
-                        BillDay billDay = new BillDay();
-                        billDay.setDate(next.getKey());
-                        List<BillDetail> billDetails = next.getValue();
-                        billDay.setBillDetailList(billDetails);
-
-                        billDay.setDayTotalIn(billDetails.stream().filter(a -> a.getMoney() > 0D).mapToDouble(BillDetail::getMoney).sum());
-                        billDay.setDayTotalOut(billDetails.stream().filter(a -> a.getMoney() < 0D).mapToDouble(BillDetail::getMoney).sum());
-
-                        datas.add(billDay);
-                    }
-                    loadData();
-                    System.out.println("查询到数据的账单数量 = " + value.size());
-                }
-        );
-        dataService.start();
+        ControllerManager.setController("bill",this);
     }
 
 
@@ -102,19 +64,99 @@ public class BillController implements TabController {
         newbillStage.initOwner(billsListView.getScene().getWindow());
         newbillStage.show();
 
+        //查询账单类型和支付方式 渲染到当前页面
+        DataUtil.getBillTypes();
+        DataUtil.getPayTypes();
+
         newbillStage.setOnHidden(event -> {
-            System.out.println("新增账单窗口隐藏了.....");
+            System.out.println("新增账单窗口关闭了.....");
+            //重新查询账单
+            DataUtil.queryData();
 
         });
     }
 
-    @Override
-    public void loadData() {
-        // 创建一个 ObservableList 并添加集合元素
-        ObservableList<BillDay> observableBillList = FXCollections.observableArrayList(datas);
-        billsListView.getItems().addAll(observableBillList);
-        //设置每行都可选择
+    /**
+     * 渲染账单数据
+     * @param datas
+     */
+    public void loadData(ObservableList<BillDay> datas) {
+        System.out.println("BillController.loadData........................");
+        // 设置每行都可选择
         billsListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-        billsListView.setCellFactory(d -> new BillCell(datas));
+        billsListView.getItems().clear();
+        billsListView.setItems(datas);
+
+        billsListView.setCellFactory(param -> new ListCell<BillDay>() {
+            private final VBox mainRoot = new VBox();
+
+            @Override
+            protected void updateItem(BillDay billDay, boolean empty) {
+                FXMLLoader loader1 = new FXMLLoader(getClass().getResource("/com/bgt/billsb/billListView.fxml"));
+                BorderPane dayView = null;
+                try {
+                    dayView = loader1.load();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                ListView<BillDetail> billsDetail = (ListView<BillDetail>) dayView.lookup("#billsDetail");
+                super.updateItem(billDay, empty);
+                if (billDay == null || empty) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    try {
+                        //账单日期、日总支出和日总收入
+                        ((Label) dayView.lookup("#date")).setText(billDay.getDate());
+                        ((Label) dayView.lookup("#dayTotalOut")).setText(String.valueOf(billDay.getDayTotalOut()));
+                        ((Label) dayView.lookup("#dayTotalIn")).setText(String.valueOf(billDay.getDayTotalIn()));
+
+                        // 更新每日账单列表
+                        ObservableList<BillDetail> observableBillList = FXCollections.observableArrayList(billDay.getBillDetailList());
+                        if (observableBillList != null && !observableBillList.isEmpty()) {
+                            billsDetail.setItems(observableBillList);
+                            billsDetail.setCellFactory(d -> new BillDetailCell(observableBillList));
+                        } else {
+                            billsDetail.setItems(FXCollections.emptyObservableList());
+                        }
+
+
+                        mainRoot.getChildren().addAll(dayView,billsDetail);
+                        setGraphic(mainRoot);
+                    } catch (Exception e) {
+                        throw new RuntimeException("Error updating list item", e);
+                    }
+                }
+            }
+        });
+    }
+
+
+
+    /**
+     * 监听数据更新
+     * @param event
+     */
+    @Subscribe
+    private void handleResultEvent(ResultEvent event) {
+        System.out.println("BillController.handleResultEvent:监听到数据更新."+event.getDataType());
+        switch (event.getDataType()){
+            case BILLDATA:
+                //渲染账单
+                this.loadData((ObservableList<BillDay>)event.getData());
+                break;
+            case PAYTYPE:
+                //渲染支付方式
+                NewbillController newbill = (NewbillController) ControllerManager.getControoler("newbill");
+                newbill.loadPayType((FXCollections.observableArrayList((List<PayTypeVo>)event.getData())));
+                break;
+            case BILLTYPE:
+                //渲染账单类型
+                NewbillController newbill2 = (NewbillController) ControllerManager.getControoler("newbill");
+                newbill2.loadBillType((FXCollections.observableArrayList((List<BillTypeVo>)event.getData())));
+                break;
+            default:
+                break;
+        }
     }
 }

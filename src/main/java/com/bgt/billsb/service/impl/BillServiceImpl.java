@@ -32,4 +32,9 @@ public class BillServiceImpl implements BillService {
     public void addBill(Bill newBill) {
         billDao.addBill(newBill);
     }
+
+    @Override
+    public void deleteBill(Integer id) {
+        billDao.deleteBill(id);
+    }
 }

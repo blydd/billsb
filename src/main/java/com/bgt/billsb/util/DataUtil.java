@@ -111,5 +111,7 @@ public class DataUtil{
     }
 
 
-
+    public static void deleteBill(Integer id) {
+        billService.deleteBill(id);
+    }
 }

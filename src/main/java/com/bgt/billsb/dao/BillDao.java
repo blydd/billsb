@@ -121,4 +121,14 @@ public class BillDao {
             throw new RuntimeException("Insert failed", e);
         }
     }
+
+    public void deleteBill(Integer id) {
+        final String SQL = "DELETE FROM t_bill WHERE id = ?";
+        try (Connection conn = DatabaseManager.getConnection(); PreparedStatement pstmt = conn.prepareStatement(SQL)) {
+            pstmt.setInt(1, id);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Delete failed", e);
+        }
+    }
 }

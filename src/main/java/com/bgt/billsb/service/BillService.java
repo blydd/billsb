@@ -15,4 +15,6 @@ public interface BillService {
     List<PayTypeVo> getPayTypes();
 
     void addBill(Bill newBill);
+
+    void deleteBill(Integer id);
 }

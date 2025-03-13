@@ -173,8 +173,17 @@ public class NewbillController{
         }
 
         Bill newBill = new Bill();
+        //收支类型
+        if (this.selectedInout == null) {
+            //默认支出
+            newBill.setInout(1);
+        }else {
+            newBill.setInout(this.selectedInout.getText().equals("入账") ? 2 : this.selectedInout.getText().equals("支出") ? 1 : 3);
+        }
         //金额
-        newBill.setMoney(Double.valueOf(this.money.getText()));
+        Double my = Double.valueOf(this.money.getText());
+        my = newBill.getInout() == 1 ? my * -1 : my;
+        newBill.setMoney(my);
         //支付方式
         if (this.selectedButton != null && this.selectedButton.getText() != null && this.payTypeList != null && !this.payTypeList.isEmpty()) {
             Optional<PayTypeVo> firstMatch = this.payTypeList.stream()
@@ -203,13 +212,7 @@ public class NewbillController{
             this.min.getValueFactory().setValue(LocalDateTime.now().getMinute());
             this.sec.getValueFactory().setValue(LocalDateTime.now().getSecond());
         }
-        //收支类型
-        if (this.selectedInout == null) {
-            //默认支出
-            newBill.setInout(1);
-        }else {
-            newBill.setInout(this.selectedInout.getText().equals("入账") ? 2 : this.selectedInout.getText().equals("支出") ? 1 : 3);
-        }
+
         //账单创建时间
         newBill.setBillTime(this.billTime.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))+" "+this.hour.getValue().toString()+":"+ this.min.getValue().toString() + ":" + this.sec.getValue().toString());
         newBill.setCreateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));

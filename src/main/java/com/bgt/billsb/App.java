@@ -46,12 +46,12 @@ public class App extends Application{
 //            }
 //        });
 
-        Scene scene = new Scene(tabPane, 600, 900);
+        Scene scene = new Scene(tabPane, 1000, 900);
         stage.setTitle("记账本!");
         stage.setScene(scene);
         stage.show();
 
-        DataUtil.queryData();
+        DataUtil.queryData(null);
     }
     private Tab createTab(String tabTitle, String fxmlPath) throws IOException {
         Tab tab = new Tab(tabTitle);

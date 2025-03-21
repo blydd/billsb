@@ -25,7 +25,7 @@ public class StatisticsController/* implements TabController*/ {
     public void initialize() {
         //注册事件总线
         EventBusUtil.getDefaut().register(this);
-        DataUtil.queryData();
+        DataUtil.queryData(null);
     }
 
 

@@ -8,5 +8,6 @@ package com.bgt.billsb.eenum;
 public enum DataTypeEnum {
     BILLDATA,
     BILLTYPE,
+    ONEBILL,
     PAYTYPE;
 }

@@ -17,15 +17,15 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bgt.billsb.controller.NewbillController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.bgt.billsb.controller.NewbillController">
    <top>
       <VBox spacing="10.0" BorderPane.alignment="CENTER_LEFT">
          <children>
             <HBox alignment="CENTER" prefHeight="50.0" prefWidth="200.0" spacing="10.0">
                <children>
-                  <ToggleButton fx:id="outBtn" mnemonicParsing="false" prefHeight="26.0" prefWidth="60.0" text="支出" />
-                  <ToggleButton fx:id="inBtn" mnemonicParsing="false" prefHeight="26.0" prefWidth="60.0" text="入账" textAlignment="CENTER" />
-                  <ToggleButton fx:id="notBtn" mnemonicParsing="false" prefWidth="60.0" text="不计入收支" />
+                  <ToggleButton fx:id="outBtn" mnemonicParsing="false" prefHeight="26.0" prefWidth="100.0" text="支出" />
+                  <ToggleButton fx:id="inBtn" mnemonicParsing="false" prefHeight="26.0" prefWidth="100.0" text="收入" textAlignment="CENTER" />
+                  <ToggleButton fx:id="notBtn" mnemonicParsing="false" prefWidth="100.0" text="不计入收支" />
                   <DatePicker fx:id="billTime" prefHeight="26.0" prefWidth="121.0" />
                   <Spinner fx:id="hour" editable="true" prefWidth="80.0" />
                   <Spinner fx:id="min" editable="true" prefWidth="80.0" />

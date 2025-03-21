@@ -1,16 +1,21 @@
 package com.bgt.billsb.controller;
 
+import com.bgt.billsb.eenum.InOutEnum;
 import com.bgt.billsb.entity.Bill;
 import com.bgt.billsb.service.BillService;
 import com.bgt.billsb.service.impl.BillServiceImpl;
 import com.bgt.billsb.util.ControllerManager;
+import com.bgt.billsb.util.DataUtil;
+import com.bgt.billsb.vo.BillDetail;
 import com.bgt.billsb.vo.BillTypeVo;
 import com.bgt.billsb.vo.PayTypeVo;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -76,6 +81,8 @@ public class NewbillController{
     //保存按钮
     @FXML
     private Button saveBtn;
+
+    private Bill newBill = new Bill();
     //初始化方法，会在 FXML 加载时自动调用
     public void initialize() {
         ControllerManager.setController("newbill",this);
@@ -84,9 +91,17 @@ public class NewbillController{
         min.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0));
         sec.setValueFactory(new SpinnerValueFactory.IntegerSpinnerValueFactory(0, 59, 0));
 
+        //默认账单时间
+        billTime.setValue(LocalDate.now());
+        hour.getValueFactory().setValue(LocalDateTime.now().getHour());
+        min.getValueFactory().setValue(LocalDateTime.now().getMinute());
+        sec.getValueFactory().setValue(LocalDateTime.now().getSecond());
+
 
         //点击收入或支出按钮
         inBtn.setOnMouseClicked(this::handleInout);
+        outBtn.setOnMouseClicked(this::handleInout);
+        notBtn.setOnMouseClicked(this::handleInout);
 
         //监听金额只能输入数字和小数点
         this.money.textProperty().addListener(new ChangeListener<String>() {
@@ -98,6 +113,7 @@ public class NewbillController{
                 }
             }
         });
+
     }
 
     /**
@@ -113,9 +129,15 @@ public class NewbillController{
         // 设置当前点击的 VBox 为选中状态
         clickedInout.setStyle("-fx-background-color: lightblue;");
         selectedInout = clickedInout;
+
+        if (clickedInout.getText().equals("支出")){
+            DataUtil.getBillTypes("支出",true);
+        }else if (clickedInout.getText().equals("收入")){
+            DataUtil.getBillTypes("收入",true);
+        }else {
+            DataUtil.getBillTypes("不计入",true);
+        }
     }
-
-
 
     /**
      * 处理支付方式的选中事件
@@ -166,13 +188,8 @@ public class NewbillController{
             return;
         }
 
-        if (Objects.isNull(selectedButton)){
-            alert.setContentText("请选择支付方式!");
-            alert.show();
-            return;
-        }
 
-        Bill newBill = new Bill();
+
         //收支类型
         if (this.selectedInout == null) {
             //默认支出
@@ -180,17 +197,29 @@ public class NewbillController{
         }else {
             newBill.setInout(this.selectedInout.getText().equals("入账") ? 2 : this.selectedInout.getText().equals("支出") ? 1 : 3);
         }
+        //支出时必选支付方式
+        if (newBill.getInout() == 1 && Objects.isNull(selectedButton)) {
+            alert.setContentText("请选择支付方式!");
+            alert.show();
+            return;
+        }else if (newBill.getInout() == 1 && Objects.nonNull(selectedButton)) {
+            //支出时 支付方式
+            if (this.selectedButton != null && this.selectedButton.getText() != null && this.payTypeList != null && !this.payTypeList.isEmpty()) {
+                Optional<PayTypeVo> firstMatch = this.payTypeList.stream()
+                        .filter(pt -> pt.getPayAccountName().equals(this.selectedButton.getText()))
+                        .findFirst();
+                firstMatch.ifPresent(pt -> newBill.setPayTypeId(pt.getId()));
+
+                //把支付方式添加到备注中
+                firstMatch.ifPresent(pt -> newBill.setDesc((pt.getPayAccountName().concat(" ").concat(this.remark.getText()))));
+            }
+        }
+
+
         //金额
         Double my = Double.valueOf(this.money.getText());
         my = newBill.getInout() == 1 ? my * -1 : my;
         newBill.setMoney(my);
-        //支付方式
-        if (this.selectedButton != null && this.selectedButton.getText() != null && this.payTypeList != null && !this.payTypeList.isEmpty()) {
-            Optional<PayTypeVo> firstMatch = this.payTypeList.stream()
-                    .filter(pt -> pt.getPayAccountName().equals(this.selectedButton.getText()))
-                    .findFirst();
-            firstMatch.ifPresent(pt -> newBill.setPayTypeId(pt.getId()));
-        }
         //账单类型
         if (this.selectedVBox != null && this.selectedVBox.getChildren() != null && !this.selectedVBox.getChildren().isEmpty()) {
             Optional<BillTypeVo> firstMatch = this.billTypeList.stream()
@@ -214,19 +243,21 @@ public class NewbillController{
         }
 
         //账单创建时间
-        newBill.setBillTime(this.billTime.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))+" "+this.hour.getValue().toString()+":"+ this.min.getValue().toString() + ":" + this.sec.getValue().toString());
+        newBill.setBillTime(this.billTime.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))+" "+DataUtil.addZero(this.hour.getValue().toString(),2)+":"+ DataUtil.addZero(this.min.getValue().toString(),2) + ":" + DataUtil.addZero(this.sec.getValue().toString(),2));
         newBill.setCreateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-        newBill.setDesc(this.remark.getText());
-        billService.addBill(newBill);
+
+        if (Objects.nonNull(newBill.getId())){
+            billService.updateBill(newBill);
+        }else {
+            billService.addBill(newBill);
+        }
+
 
         //保存成功后关闭当前窗口
         Stage window = (Stage) billTime.getScene().getWindow();
         window.close();
 
     }
-
-
-
 
     /**
      * 渲染支付方式
@@ -254,6 +285,7 @@ public class NewbillController{
             }
         }
     }
+
     /**
      * 渲染账单类型
      * @param value
@@ -288,6 +320,83 @@ public class NewbillController{
             if (colIndex == 6) {
                 colIndex = 0;
                 rowIndex++;
+            }
+        }
+    }
+
+    /**
+     * 修改账单渲染数据
+     * @param data
+     */
+    public void loadData(List<BillDetail> data) {
+        BillDetail billDetail = data.get(0);
+        newBill.setId(billDetail.getId());
+        //金额
+//        this.money.setPromptText(String.valueOf(billDetail.getMoney()));
+        this.money.setText(String.valueOf(billDetail.getMoney()).replace("-",""));
+        //备注
+        this.remark.setText(billDetail.getDesc().substring(billDetail.getDesc().indexOf(" ")+1));
+        //账单时间
+        this.billTime.setValue(LocalDate.parse(billDetail.getBillTime(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        this.hour.getValueFactory().setValue(LocalDateTime.parse(billDetail.getBillTime(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).getHour());
+        this.min.getValueFactory().setValue(LocalDateTime.parse(billDetail.getBillTime(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).getMinute());
+        this.sec.getValueFactory().setValue(LocalDateTime.parse(billDetail.getBillTime(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).getSecond());
+        //收支类型
+        if (billDetail.getInout() == 1) {
+            outBtn.setSelected(true);
+            outBtn.setStyle("-fx-background-color: lightblue;");
+            selectedInout = outBtn;
+
+            inBtn.setStyle("-fx-background-color: transparent;");
+            notBtn.setStyle("-fx-background-color: transparent;");
+        } else {
+            if (billDetail.getInout() == 2) {
+                inBtn.setSelected(true);
+                inBtn.setStyle("-fx-background-color: lightblue;");
+                selectedInout = inBtn;
+
+                notBtn.setStyle("-fx-background-color: transparent;");
+                notBtn.setStyle("-fx-background-color: transparent;");
+            } else {
+                notBtn.setSelected(true);
+                notBtn.setStyle("-fx-background-color: lightblue;");
+                selectedInout = notBtn;
+
+                inBtn.setStyle("-fx-background-color: transparent;");
+                outBtn.setStyle("-fx-background-color: transparent;");
+            }
+        }
+        //支付方式
+        if (billDetail.getPayAccountName() != null) {
+            if (Objects.isNull(this.payTypeList)){
+                this.payTypeList = DataUtil.getPayTypes(false);
+                this.loadPayType(FXCollections.observableArrayList(payTypeList));
+            }
+            for (Node child : payTypePane.getChildren()) {
+                Button btn = (Button) child;
+                if (btn.getText().equals(billDetail.getPayAccountName())) {
+                    btn.setStyle("-fx-background-color: lightblue;");
+                    selectedButton = btn;
+                }else {
+                    btn.setStyle("-fx-background-color: transparent;");
+                }
+            }
+        }
+        //账单类型
+        if (billDetail.getBillType() != null) {
+            if (Objects.isNull(this.billTypeList)){
+                this.billTypeList = DataUtil.getBillTypes(InOutEnum.getName(billDetail.getInout()),false);
+                this.loadBillType(FXCollections.observableArrayList(billTypeList));
+            }
+            for (Node child : billTypePane.getChildren()) {
+                VBox btn = (VBox) child;
+                Label node = (Label) btn.getChildren().get(1);
+                if (node.getText().equals(billDetail.getBillType())) {
+                    btn.setStyle("-fx-background-color: lightblue;");
+                    selectedVBox = btn;
+                }else {
+                    btn.setStyle("-fx-background-color: transparent;");
+                }
             }
         }
     }

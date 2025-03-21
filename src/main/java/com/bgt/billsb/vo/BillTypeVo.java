@@ -7,9 +7,16 @@ package com.bgt.billsb.vo;
  */
 public class BillTypeVo {
  private Integer id;
+ /**
+  * 衣食住行等
+  */
  private String billType;
  private String icon;
  private Integer sort;
+ /**
+  * 支出 / 收入
+  */
+ private String type;
 
  public BillTypeVo(Integer id, String billType, String icon, Integer sort) {
   this.id = id;

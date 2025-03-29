@@ -1,0 +1,26 @@
+/* 隐藏日历网格（二次加固） */
+.calendar-grid {
+    visibility: hidden;
+    -fx-pref-height: 0;
+    -fx-max-height: 0;
+}
+
+/* 调整月份导航栏样式 */
+.month-year-pane {
+    -fx-font-size: 14px;
+    -fx-padding: 8px 0;
+}
+
+
+/* 隐藏日期表头和周数列 */
+.date-picker-popup .column-header,
+.date-picker-popup .show-week-numbers {
+    -fx-padding: 0;
+    -fx-pref-width: 0;
+    visibility: hidden;
+}
+
+/* 压缩弹窗高度 */
+.date-picker-popup {
+    -fx-pref-height: 80px; /* 仅保留月份导航栏高度 */
+}

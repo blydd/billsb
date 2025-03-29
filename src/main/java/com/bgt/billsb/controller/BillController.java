@@ -7,6 +7,7 @@ import com.bgt.billsb.eenum.InOutEnum;
 import com.bgt.billsb.util.ControllerManager;
 import com.bgt.billsb.util.DataUtil;
 import com.bgt.billsb.util.EventBusUtil;
+import com.bgt.billsb.util.MonthPicker;
 import com.bgt.billsb.vo.BillDay;
 import com.bgt.billsb.vo.BillDetail;
 import com.bgt.billsb.vo.BillTypeVo;
@@ -36,6 +37,7 @@ import javax.sound.sampled.Line;
 import java.awt.*;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.List;
 import java.util.Objects;
 
@@ -48,7 +50,7 @@ public class BillController {
     private ListView billsListView;
     //月份日期控件
     @FXML
-    private DatePicker billMonth;
+    private MonthPicker billMonth;
     @FXML
     private BorderPane borderPane;
     //总支出
@@ -58,6 +60,11 @@ public class BillController {
     @FXML
     private Label totalIn;
 
+
+    @FXML
+    private Button preMonth;
+    @FXML
+    private Button nextMonth;
     //账单类型:衣食住行
     @FXML
     private ChoiceBox billTypeView;
@@ -77,12 +84,75 @@ public class BillController {
      * 初始化方法
      */
     public void initialize() throws IOException {
+
+
         //注册事件总线
         EventBusUtil.getDefaut().register(this);
 
         ControllerManager.setController("bill",this);
 
-        //上面月份默认显示当月
+        handleDatePicker();
+        //监听账单类型值变化 payTypeView
+        billTypeView.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == null){
+                return;
+            }
+            BillDto param = new BillDto();
+            param.setBillMonth(billlMonthStr);
+            param.setBillType(newValue.toString());
+            param.setPayType(Objects.isNull(payTypeView.getValue()) ? "" : payTypeView.getValue().toString());
+            DataUtil.queryData(param);
+        });
+
+        //监听支付方式值变化
+        payTypeView.valueProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == null){
+                return;
+            }
+            BillDto param = new BillDto();
+            param.setBillMonth(billlMonthStr);
+            param.setPayType(newValue.toString());
+            param.setBillType(Objects.isNull(billTypeView.getValue()) ? "" : billTypeView.getValue().toString());
+            DataUtil.queryData(param);
+        });
+        //查询账单数据
+        DataUtil.queryData(null);
+        //查询支付方式
+        DataUtil.getPayTypes(true);
+        //查询账单类型
+        DataUtil.getBillTypes("",true);
+
+        preMonth.setOnAction(event -> {
+            billMonth.previousMonth();
+        });
+        nextMonth.setOnAction(event -> {
+            billMonth.nextMonth();
+        });
+
+    }
+
+    /**
+     * 处理月份变化
+     */
+    private void handleDatePicker() {
+        // 监听选择事件
+        billMonth.valueProperty().addListener((obs, oldVal, newVal) -> {
+            System.out.println("Selected: " + billMonth.getSelectedYearMonth());
+            BillDto param = new BillDto();
+            param.setBillMonth(billMonth.getSelectedYearMonth().toString());
+            DataUtil.queryData(param);
+
+            billlMonthStr = billMonth.getSelectedYearMonth().toString();
+        });
+
+    }
+
+    /**
+     * 显示具体日期 暂弃用
+     */
+    private void handleDatePicker1() {
+        // 设置默认值为当前年月
+        /**月份组件处理-begin*/
         StringConverter<LocalDate> converter = new StringConverter<LocalDate>() {
             @Override
             public String toString(LocalDate date) {
@@ -129,38 +199,7 @@ public class BillController {
 
             billlMonthStr = param.getBillMonth();
         });
-
-        //监听账单类型值变化 payTypeView
-        billTypeView.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue == null){
-                return;
-            }
-            BillDto param = new BillDto();
-            param.setBillMonth(billlMonthStr);
-            param.setBillType(newValue.toString());
-            param.setPayType(Objects.isNull(payTypeView.getValue()) ? "" : payTypeView.getValue().toString());
-            DataUtil.queryData(param);
-        });
-
-        //监听支付方式值变化
-        payTypeView.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue == null){
-                return;
-            }
-            BillDto param = new BillDto();
-            param.setBillMonth(billlMonthStr);
-            param.setPayType(newValue.toString());
-            param.setBillType(Objects.isNull(billTypeView.getValue()) ? "" : billTypeView.getValue().toString());
-            DataUtil.queryData(param);
-        });
-        //查询账单数据
-        DataUtil.queryData(null);
-        //查询支付方式
-        DataUtil.getPayTypes(true);
-        //查询账单类型
-        DataUtil.getBillTypes("",true);
-
-    }
+        /**月份组件处理-end*/}
 
 
     /**

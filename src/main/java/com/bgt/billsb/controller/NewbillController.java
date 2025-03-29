@@ -81,6 +81,8 @@ public class NewbillController{
     //保存按钮
     @FXML
     private Button saveBtn;
+    @FXML
+    private Label payTypeLabel;
 
     private Bill newBill = new Bill();
     //初始化方法，会在 FXML 加载时自动调用
@@ -137,6 +139,8 @@ public class NewbillController{
         }else {
             DataUtil.getBillTypes("不计入",true);
         }
+
+        loadPayType(FXCollections.observableArrayList(DataUtil.getPayTypes(false)));
     }
 
     /**
@@ -195,24 +199,52 @@ public class NewbillController{
             //默认支出
             newBill.setInout(1);
         }else {
-            newBill.setInout(this.selectedInout.getText().equals("入账") ? 2 : this.selectedInout.getText().equals("支出") ? 1 : 3);
+            newBill.setInout(this.selectedInout.getText().equals("收入") ? 2 : this.selectedInout.getText().equals("支出") ? 1 : 3);
         }
         //支出时必选支付方式
         if (newBill.getInout() == 1 && Objects.isNull(selectedButton)) {
             alert.setContentText("请选择支付方式!");
             alert.show();
             return;
+        }else if (newBill.getInout() != 1 && Objects.isNull(selectedButton)) {
+            //支出时 支付方式
+                Optional<PayTypeVo> firstMatch = this.payTypeList.stream()
+                        .filter(pt -> pt.getPayAccountName().equals(this.selectedButton.getText()))
+                        .findFirst();
+                firstMatch.ifPresent(pt -> newBill.setPayTypeId(pt.getId()));
+
+                firstMatch.ifPresentOrElse(
+                        pt -> {
+                            String payAccountName = (pt.getPayAccountName() != null) ? pt.getPayAccountName() : "";
+                            // 使用 + 操作符优化字符串拼接
+                            newBill.setDesc(payAccountName + " " + this.remark.getText());
+                        },
+                        () -> {
+                            // 使用常量替代硬编码
+                            newBill.setDesc("储蓄账户 " + this.remark.getText());
+                        }
+                );
         }else if (newBill.getInout() == 1 && Objects.nonNull(selectedButton)) {
             //支出时 支付方式
-            if (this.selectedButton != null && this.selectedButton.getText() != null && this.payTypeList != null && !this.payTypeList.isEmpty()) {
                 Optional<PayTypeVo> firstMatch = this.payTypeList.stream()
                         .filter(pt -> pt.getPayAccountName().equals(this.selectedButton.getText()))
                         .findFirst();
                 firstMatch.ifPresent(pt -> newBill.setPayTypeId(pt.getId()));
 
                 //把支付方式添加到备注中
-                firstMatch.ifPresent(pt -> newBill.setDesc((pt.getPayAccountName().concat(" ").concat(this.remark.getText()))));
-            }
+                firstMatch.ifPresentOrElse(
+                        pt -> {
+                            // 空值检查，避免 NullPointerException
+                            String payAccountName = (pt.getPayAccountName() != null) ? pt.getPayAccountName() : "";
+                            // 使用 + 操作符优化字符串拼接
+                            newBill.setDesc(payAccountName + " " + this.remark.getText());
+                        },
+                        () -> {
+                            newBill.setDesc("储蓄账户 " + this.remark.getText());
+                        }
+                );
+        }else {
+            newBill.setDesc(this.remark.getText());
         }
 
 
@@ -264,7 +296,18 @@ public class NewbillController{
      * @param value
      */
     public void loadPayType(ObservableList<PayTypeVo> value) {
-        this.payTypeList = value;
+        //收支类型
+        if (this.selectedInout == null || this.selectedInout.getText().equals("支出")){
+            this.payTypeList = value;
+            this.payTypeLabel.setText("支付方式");
+        }else {
+            this.payTypeList = FXCollections.emptyObservableList();
+            payTypePane.getChildren().clear();
+
+            this.payTypeLabel.setText("");
+            return;
+        }
+
         payTypePane.getChildren().clear();
         int colIndex = 0 ;
         int rowIndex = 0 ;

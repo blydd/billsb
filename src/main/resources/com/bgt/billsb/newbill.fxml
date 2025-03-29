@@ -89,7 +89,7 @@
                   <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
                </padding>
             </GridPane>
-            <Label text="支付方式:">
+            <Label fx:id="payTypeLabel" text="支付方式:">
                <font>
                   <Font name="System Bold" size="25.0" />
                </font>

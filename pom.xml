@@ -49,25 +49,68 @@
             <artifactId>hutool-all</artifactId>
             <version>5.8.22</version>
         </dependency>
-
+        <!--    事件总线    -->
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>30.1.1-jre</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.controlsfx</groupId>
+            <artifactId>controlsfx</artifactId>
+            <version>11.2.1</version>
+        </dependency>
     </dependencies>
 
+<!--    <build>-->
+<!--        <plugins>-->
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-compiler-plugin</artifactId>-->
+<!--                <configuration>-->
+<!--                    <source>17</source>-->
+<!--                    <target>17</target>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
+<!--        </plugins>-->
+<!--    </build>-->
     <build>
         <plugins>
+            <!-- maven打包插件-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
                 <configuration>
                     <source>17</source>
+                    <encoding>utf-8</encoding>
                     <target>17</target>
+                </configuration>
+            </plugin>
+            <!-- 打包插件-->
+            <plugin>
+                <groupId>org.openjfx</groupId>
+                <artifactId>javafx-maven-plugin</artifactId>
+                <version>0.0.8</version>
+                <configuration>
+                    <stripDebug>true</stripDebug>
+                    <compress>2</compress>
+                    <noHeaderFiles>true</noHeaderFiles>
+                    <noManPages>true</noManPages>
+                    <!--  启动器名称-->
+                    <launcher>bill</launcher>
+                    <jlinkImageName>bill</jlinkImageName>
+                    <jlinkZipName>billZip</jlinkZipName>
+                    <!-- 主类名称-->
+                    <mainClass>com.bgt.billsb.App</mainClass>
+
+                    <options>
+                        <option>--add-modules</option>
+                        <option>ALL-MODULE-PATH</option>
+                    </options>
                 </configuration>
             </plugin>
         </plugins>
     </build>
-
 </project>

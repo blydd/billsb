@@ -150,6 +150,10 @@ public class BillDao {
      * @param newBill
      */
     public void addBill(Bill newBill) {
+        //支付方式为空时默认传0-储蓄账户
+        if (Objects.isNull(newBill.getPayTypeId())){
+            newBill.setPayTypeId(0);
+        }
         //组装插入sql
         String SQL = "INSERT INTO t_bill (money, bill_time, create_time, bill_type_id, pay_type_id,inout, desc) VALUES (?, ?, ?, ?, ?,?, ?)";
         try (Connection conn = DatabaseManager.getConnection(); PreparedStatement pstmt = conn.prepareStatement(SQL)) {

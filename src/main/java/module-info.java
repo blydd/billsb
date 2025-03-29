@@ -15,12 +15,9 @@ open module billSB {
     requires java.desktop;
     requires cn.hutool;
     requires com.google.common;
-    // 导出com.bgt.billsb包到javafx.graphics模块，允许javafx.graphics模块使用com.bgt.billsb包中的类
-    exports com.bgt.billsb to javafx.graphics;
-    // 导出com.bgt.billsb.controller包到javafx.fxml模块，允许javafx.fxml模块使用com.bgt.billsb.controller包中的类
-    exports com.bgt.billsb.controller to javafx.fxml;
-    exports com.bgt.billsb.eenum to javafx.graphics;
-    // 打开com.bgt.billsb.controller包到javafx.fxml模块，允许javafx.fxml模块使用com.bgt.billsb.controller包中的类
-//    opens com.bgt.billsb.controller to javafx.fxml,com.google.common;
-
+    
+    exports com.bgt.billsb;
+    exports com.bgt.billsb.controller;
+    exports com.bgt.billsb.eenum;
+    exports com.bgt.billsb.util;
 }

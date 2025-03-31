@@ -11,12 +11,9 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.geometry.Side;
 import javafx.scene.Node;
-import javafx.scene.chart.PieChart;
+import javafx.scene.chart.*;
 import javafx.scene.control.*;
-import javafx.util.Callback;
-import javafx.util.StringConverter;
 
-import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -39,6 +36,8 @@ public class StatisticsController {
     private Button preMonth;
     @FXML
     private Button nextMonth;
+    @FXML
+    private BarChart barChart;
 
     //账单月份
     private String billlMonthStr;
@@ -111,7 +110,50 @@ public class StatisticsController {
         //悬浮展示具体数值
         handleMouseEnter(pieChartOut);
         handleMouseEnter(pieChartIn);
+
+
+        // 按支付方式统计支出金额
+        Map<String, Double> groupByPayTypeOut = datas.stream()
+                .filter(b -> b != null && b.getBillDetailList() != null)
+                .flatMap(b -> b.getBillDetailList().stream())
+                .filter(b1 -> b1 != null && Objects.equals(1, b1.getInout()))
+                .filter(b1 -> b1.getMoney() != null)
+                .collect(Collectors.groupingBy(BillDetail::getPayAccountName, Collectors.summingDouble(b1 -> Math.abs(b1.getMoney()))));
+
+        //实现根据value倒序排序
+        List<Map.Entry<String, Double>> collect = groupByPayTypeOut.entrySet().stream().sorted(Map.Entry.<String, Double>comparingByValue().reversed()).collect(Collectors.toList());
+        // 创建 x 轴和 y 轴
+        CategoryAxis xAxis = new CategoryAxis();
+        xAxis.setLabel("卡");
+
+        NumberAxis yAxis = new NumberAxis();
+        yAxis.setLabel("钱");
+
+        // 使用类级别的 @FXML 定义的 barChart
+        barChart.setData(FXCollections.observableArrayList()); // 清空原有数据
+        barChart.setTitle("支付方式统计");
+
+        // 创建数据系列
+        XYChart.Series<String, Double> series = new XYChart.Series<>();
+        series.setName(billlMonthStr);
+
+        if (groupByPayTypeOut != null) {
+            ObservableList<XYChart.Data<String, Double>> dataSeries = FXCollections.observableArrayList();
+            collect.forEach((enrty) -> {
+                    XYChart.Data<String, Double> d = new XYChart.Data<>(enrty.getKey(),enrty.getValue());
+                    dataSeries.add(d);
+                    //设置悬浮值
+            });
+            series.setData(dataSeries); // 设置数据
+        }
+        // 将系列添加到图表
+        barChart.getData().add(series);
+
+
+                
     }
+
+
 
     /**
      * 鼠标悬浮展示饼图数据
@@ -167,62 +209,4 @@ public class StatisticsController {
         });
 
     }
-    /**
-     * 处理日期组件
-     * 显示具体日期 暂弃用
-     */
-//    private void handleDatePicker(){
-//        /**月份组件处理-begin*/
-//        //上面月份默认显示当月
-//        StringConverter<LocalDate> converter = new StringConverter<LocalDate>() {
-//            @Override
-//            public String toString(LocalDate date) {
-//                if (date != null) {
-//                    return DataUtil.DTF_MONTH.format(date);
-//                }
-//                return "";
-//            }
-//
-//            @Override
-//            public LocalDate fromString(String string) {
-//                if (string != null && !string.isEmpty()) {
-//                    return LocalDate.parse(string, DataUtil.DTF_MONTH);
-//                }
-//                return null;
-//            }
-//        };
-//        //billMonth展示为yyyyy-MM格式
-//        billMonth.setConverter(converter);
-//        billMonth.setPromptText(DataUtil.getCurrentMonth());
-//        billlMonthStr = billMonth.getPromptText();
-//        // 只允许选择每个月的第一天
-//        Callback<DatePicker, DateCell> dayCellFactory = new Callback<DatePicker, DateCell>() {
-//            @Override
-//            public DateCell call(final DatePicker datePicker) {
-//                return new DateCell() {
-//                    @Override
-//                    public void updateItem(LocalDate item, boolean empty) {
-//                        super.updateItem(item, empty);
-//                        if (item.getDayOfMonth() != 1) {
-//                            setDisable(true);
-//                            setStyle("-fx-background-color: #EEEEEE;");
-//                        }
-//                    }
-//                };
-//            }
-//        };
-//        // 设置日期单元格工厂
-//        billMonth.setDayCellFactory(dayCellFactory);
-//        //监听billMonth的选择值
-//        billMonth.valueProperty().addListener((observable, oldValue, newValue) -> {
-//            BillDto param = new BillDto();
-//            param.setBillMonth(newValue.toString().substring(0, newValue.toString().lastIndexOf("-")));
-//            datas = DataUtil.queryData(param);
-//            //渲染页面
-//            loadData();
-//
-//            billlMonthStr = param.getBillMonth();
-//        });
-//        /**月份组件处理-end*/
-//    }
 }

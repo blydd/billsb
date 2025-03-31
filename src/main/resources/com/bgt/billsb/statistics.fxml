@@ -77,7 +77,7 @@
          <children>
             <PieChart fx:id="pieChartOut" labelLineLength="40.0" title="支出构成" titleSide="LEFT" style="-fx-background-color: white; -fx-background-radius: 4;" VBox.vgrow="ALWAYS" />
             <PieChart fx:id="pieChartIn" labelLineLength="40.0" title="入账构成" titleSide="LEFT" style="-fx-background-color: white; -fx-background-radius: 4;" VBox.vgrow="ALWAYS" />
-            <BarChart visible="false" style="-fx-background-color: white; -fx-background-radius: 4;" VBox.vgrow="ALWAYS">
+            <BarChart fx:id="barChart" title="支出卡金额排名" titleSide="BOTTOM" style="-fx-background-color: white; -fx-background-radius: 4;" VBox.vgrow="ALWAYS">
               <xAxis>
                 <CategoryAxis side="BOTTOM" />
               </xAxis>

@@ -35,17 +35,40 @@ public class App extends Application{
         Tab tab2 = createTab("统计", "/com/bgt/billsb/statistics.fxml");
         Tab tab3 = createTab("设置", "/com/bgt/billsb/setup.fxml");
         
-        // 设置Tab的宽度
-        tabPane.setTabMinWidth(333);  // 设置最小宽度为窗口宽度的三分之一
-        tabPane.setTabMaxWidth(333);  // 设置最大宽度相同，强制固定宽度
+        // 设置Tab的宽度和高度
+        tabPane.setTabMinWidth(333);  
+        tabPane.setTabMaxWidth(333);  
+        tabPane.setTabMinHeight(50);   // 设置标签高度
         
-        // 基础样式
+        // 优化样式
         tabPane.setStyle(
             ".tab-pane .tab-header-area .tab-header-background {" +
             "    -fx-background-color: #f4f4f4;" +
+            "    -fx-border-width: 0 0 1 0;" +    
+            "    -fx-border-color: #ddd;" +       
+            "}" +
+            ".tab-pane .tab {" +
+            "    -fx-background-color: #f8f9fa;" +
+            "    -fx-background-insets: 0;" +
+            "    -fx-background-radius: 0;" +
+            "    -fx-padding: 0 20;" +            
+            "    -fx-text-fill: #666666;" +       
+            "}" +
+            ".tab-pane .tab .tab-label {" +       // 直接针对标签文本
+            "    -fx-text-fill: #666666;" +
+            "    -fx-alignment: CENTER;" +
+            "}" +
+            ".tab-pane .tab:hover .tab-label {" + // 悬停时的文本样式
+            "    -fx-text-fill: #3b7cac;" +
             "}" +
             ".tab-pane .tab:selected {" +
-            "    -fx-background-color: #e0e0e0;" +
+            "    -fx-background-color: white;" +
+            "}" +
+            ".tab-pane .tab:selected .tab-label {" + // 选中时的文本样式
+            "    -fx-text-fill: #3b7cac;" +
+            "}" +
+            ".tab-pane .focus-indicator {" +
+            "    -fx-border-width: 0;" +
             "}"
         );
 
@@ -71,6 +94,9 @@ public class App extends Application{
         // 加载 FXML 文件并设置为 Tab 的内容
         FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
         tab.setContent((Node) loader.load());
+        
+        // 设置标签样式类
+        tab.setStyle("-fx-font-family: 'Microsoft YaHei'; -fx-font-size: 16px; -fx-font-weight: bold;");
         return tab;
     }
     private void reloadTab(Tab tab, String fxmlPath) throws IOException {

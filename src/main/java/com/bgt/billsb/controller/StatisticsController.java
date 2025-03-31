@@ -232,20 +232,6 @@ public class StatisticsController {
      */
     private void handleMouseEnter(PieChart pieChart) {
         for (PieChart.Data data : pieChart.getData()) {
-            data.getNode().setOnMouseClicked(event -> {
-                alert.setTitle(data.getName());
-                alert.setContentText(String.valueOf(data.getPieValue()));
-                alert.setAlertType(Alert.AlertType.NONE);
-                // 添加关闭按钮
-                ButtonType closeButton = new ButtonType("关闭");
-                alert.getButtonTypes().setAll(closeButton);
-                // 显示 Alert 对话框并等待用户操作
-                Optional<ButtonType> result = alert.showAndWait();
-                if (result.isPresent() && result.get() == closeButton) {
-                    // 当用户点击关闭按钮时，关闭对话框
-                    alert.close();
-                }
-            });
             //悬浮放大
             data.getNode().setOnMouseEntered(event -> {
                 Node source = (Node) event.getSource();

@@ -294,11 +294,10 @@ public class BillController {
         billsListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         billsListView.getItems().clear();
         billsListView.setItems(datas);
-
-        //展示总支出 总入账
-        totalIn.setText(datas.stream().mapToDouble(BillDay::getDayTotalIn).sum() + "");
-        totalOut.setText(datas.stream().mapToDouble(BillDay::getDayTotalOut).sum() + "");
-
+        // 设置ListView样式，移除默认的选中效果
+        billsListView.setStyle("-fx-background-color: transparent; -fx-selection-bar: transparent; -fx-selection-bar-non-focused: transparent;");
+        
+        // 设置ListView的选中项样式
         billsListView.setCellFactory(param -> new ListCell<BillDay>() {
             @Override
             protected void updateItem(BillDay billDay, boolean empty) {
@@ -310,52 +309,75 @@ public class BillController {
                     BorderPane borderPane = new BorderPane();
                     //日合计
                     HBox dayTotal = new HBox();
+                    dayTotal.setStyle("-fx-padding: 10px; -fx-background-color: #E8F5E9; -fx-border-color: #C8E6C9; -fx-border-width: 0 0 1 0;");
 
                     Label billDate = new Label(billDay.getDate());
                     //设置粗体及字号及颜色
                     billDate.setTextFill(javafx.scene.paint.Color.RED);
-                    billDate.setStyle("-fx-font-weight: bold;-fx-font-size: 16px;");
+                    billDate.setStyle("-fx-font-weight: bold; -fx-font-size: 16px; -fx-padding: 0 10px;");
                     dayTotal.getChildren().add(billDate);
                     dayTotal.getChildren().add(new Label("                     "));
                     Label outDayTotal = new Label("出：" + String.valueOf(billDay.getDayTotalOut()));
                     //设置粗体及字号及颜色
-                    outDayTotal.setStyle("-fx-font-weight: bold;-fx-font-size: 16px;");
+                    outDayTotal.setStyle("-fx-font-weight: bold; -fx-font-size: 16px; -fx-padding: 0 10px;");
                     outDayTotal.setTextFill(javafx.scene.paint.Color.RED);
                     dayTotal.getChildren().add(outDayTotal);
                     dayTotal.getChildren().add(new Label("                     "));
                     Label inDayTotal = new Label("入：" + String.valueOf(billDay.getDayTotalIn()));
                     //设置粗体及字号及颜色
-                    inDayTotal.setStyle("-fx-font-weight: bold;-fx-font-size: 16px;");
+                    inDayTotal.setStyle("-fx-font-weight: bold; -fx-font-size: 16px; -fx-padding: 0 10px;");
                     inDayTotal.setTextFill(javafx.scene.paint.Color.RED);
                     dayTotal.getChildren().add(inDayTotal);
 
                     borderPane.setTop(dayTotal);
 
                     ListView<BorderPane> billList = new ListView<>();
+                    billList.setStyle("-fx-background-color: transparent; -fx-selection-bar: transparent; -fx-selection-bar-non-focused: transparent;");
                     //账单列表
                     ObservableList<BillDetail> observableBillList = FXCollections.observableArrayList(billDay.getBillDetailList());
                     for (BillDetail billDetail : observableBillList) {
                         //每一行账单
                         BorderPane billView = new BorderPane();
+                        billView.setStyle("-fx-padding: 10px; -fx-background-color: white; -fx-border-color: #EEEEEE; -fx-border-width: 0 0 1 0;");
+                        
                         //图标
                         javafx.scene.image.ImageView iconView = new ImageView(new Image(getClass().getResource("/img/" + billDetail.getIcon() + ".png").toExternalForm()));
-                        iconView.setFitWidth(50);
-                        iconView.setFitHeight(50);
+                        iconView.setFitWidth(40);
+                        iconView.setFitHeight(40);
+                        iconView.setStyle("-fx-padding: 5px;");
                         billView.setLeft(iconView);
+                        
                         //账单类型 时间 备注(含支付类型)
                         VBox billType = new VBox();
-                        billType.getChildren().add(new Label(billDetail.getBillType().concat("   ").concat(billDetail.getBillTime())));
-                        billType.getChildren().add(new Label(billDetail.getDesc()));
+                        billType.setSpacing(5);
+                        Label typeLabel = new Label(billDetail.getBillType().concat("   ").concat(billDetail.getBillTime()));
+                        typeLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
+                        Label descLabel = new Label(billDetail.getDesc());
+                        descLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #666666;");
+                        billType.getChildren().addAll(typeLabel, descLabel);
                         billView.setCenter(billType);
+                        
                         //金额 按钮
                         HBox money = new HBox();
+                        money.setSpacing(10);
+                        money.setAlignment(Pos.CENTER_RIGHT);
                         Double my = billDetail.getMoney();
                         Label billMoney = new Label(String.valueOf(billDetail.getMoney()));
+                        billMoney.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: " + 
+                            (my < 0 ? "#FF4444" : "#44BB44") + ";");
                         money.getChildren().add(billMoney);
-                        money.getChildren().add(new Label("     "));
+                        
+                        HBox buttons = new HBox();
+                        buttons.setSpacing(8);
+                        
                         Label btn = new Label("编辑");
                         //编辑按钮添加按钮样式
-                        btn.setStyle("-fx-background-color: #FF0000;-fx-text-fill: #FFFFFF;-fx-font-size: 12px;-fx-padding: 5px 10px;");
+                        btn.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 12px; " +
+                            "-fx-padding: 5px 15px; -fx-background-radius: 3px;");
+                        btn.setOnMouseEntered(e -> btn.setStyle("-fx-background-color: #45a049; -fx-text-fill: white; " +
+                            "-fx-font-size: 12px; -fx-padding: 5px 15px; -fx-background-radius: 3px;"));
+                        btn.setOnMouseExited(e -> btn.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; " +
+                            "-fx-font-size: 12px; -fx-padding: 5px 15px; -fx-background-radius: 3px;"));
                         btn.setOnMouseClicked(event -> {
                             try {
                                 updateBillAction(billDetail);
@@ -363,31 +385,51 @@ public class BillController {
                                 throw new RuntimeException(e);
                             }
                         });
-                        money.getChildren().add(btn);
+                        
                         Label btn2 = new Label("删除");
                         //删除按钮添加按钮样式
-                        btn2.setStyle("-fx-background-color: #FF0000;-fx-text-fill: #FFFFFF;-fx-font-size: 12px;-fx-padding: 5px 10px;");
+                        btn2.setStyle("-fx-background-color: #f44336; -fx-text-fill: white; -fx-font-size: 12px; " +
+                            "-fx-padding: 5px 15px; -fx-background-radius: 3px;");
+                        btn2.setOnMouseEntered(e -> btn2.setStyle("-fx-background-color: #da190b; -fx-text-fill: white; " +
+                            "-fx-font-size: 12px; -fx-padding: 5px 15px; -fx-background-radius: 3px;"));
+                        btn2.setOnMouseExited(e -> btn2.setStyle("-fx-background-color: #f44336; -fx-text-fill: white; " +
+                            "-fx-font-size: 12px; -fx-padding: 5px 15px; -fx-background-radius: 3px;"));
                         btn2.setOnMouseClicked(event -> {
                             System.out.println("删除账单："+billDetail.getId());
                             DataUtil.deleteBill(billDetail.getId());
                             DataUtil.queryData(null);
                         });
-                        money.getChildren().add(btn2);
+                        
+                        buttons.getChildren().addAll(btn, btn2);
+                        money.getChildren().add(buttons);
                         billView.setRight(money);
 
                         billList.getItems().add(billView);
                     }
                     //设置每天账单区域高度
-                    billList.setMaxHeight(billList.getItems().size()*57.5);
-                    billList.setMinHeight(billList.getItems().size()*57.5);
+                    billList.setMaxHeight(billList.getItems().size()*70);
+                    billList.setMinHeight(billList.getItems().size()*70);
                     borderPane.setCenter(billList);
 
-
                     setGraphic(borderPane);
-
+                    
+                    // 设置选中效果
+                    setStyle("-fx-background-color: transparent;");
+                    setOnMouseEntered(e -> {
+                        setStyle("-fx-background-color: #F5F5F5;");
+                        dayTotal.setStyle("-fx-padding: 10px; -fx-background-color: #E8F5E9; -fx-border-color: #C8E6C9; -fx-border-width: 0 0 1 0;");
+                    });
+                    setOnMouseExited(e -> {
+                        setStyle("-fx-background-color: transparent;");
+                        dayTotal.setStyle("-fx-padding: 10px; -fx-background-color: #E8F5E9; -fx-border-color: #C8E6C9; -fx-border-width: 0 0 1 0;");
+                    });
                 }
             }
         });
+
+        //展示总支出 总入账
+        totalIn.setText(datas.stream().mapToDouble(BillDay::getDayTotalIn).sum() + "");
+        totalOut.setText(datas.stream().mapToDouble(BillDay::getDayTotalOut).sum() + "");
     }
 
 

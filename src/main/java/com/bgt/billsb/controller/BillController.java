@@ -295,7 +295,7 @@ public class BillController {
         billsListView.getItems().clear();
         billsListView.setItems(datas);
         // 设置ListView样式，移除默认的选中效果
-        billsListView.setStyle("-fx-background-color: transparent; -fx-selection-bar: transparent; -fx-selection-bar-non-focused: transparent;");
+        billsListView.setStyle("-fx-background-color: #2E7D32; -fx-selection-bar: transparent; -fx-selection-bar-non-focused: transparent;");
         
         // 设置ListView的选中项样式
         billsListView.setCellFactory(param -> new ListCell<BillDay>() {
@@ -309,24 +309,24 @@ public class BillController {
                     BorderPane borderPane = new BorderPane();
                     //日合计
                     HBox dayTotal = new HBox();
-                    dayTotal.setStyle("-fx-padding: 10px; -fx-background-color: #E8F5E9; -fx-border-color: #C8E6C9; -fx-border-width: 0 0 1 0;");
+                    dayTotal.setStyle("-fx-padding: 10px; -fx-background-color: #1B5E20; -fx-border-color: #388E3C; -fx-border-width: 0 0 1 0;");
 
                     Label billDate = new Label(billDay.getDate());
                     //设置粗体及字号及颜色
-                    billDate.setTextFill(javafx.scene.paint.Color.RED);
+                    billDate.setTextFill(javafx.scene.paint.Color.WHITE);
                     billDate.setStyle("-fx-font-weight: bold; -fx-font-size: 16px; -fx-padding: 0 10px;");
                     dayTotal.getChildren().add(billDate);
                     dayTotal.getChildren().add(new Label("                     "));
                     Label outDayTotal = new Label("出：" + String.valueOf(billDay.getDayTotalOut()));
                     //设置粗体及字号及颜色
                     outDayTotal.setStyle("-fx-font-weight: bold; -fx-font-size: 16px; -fx-padding: 0 10px;");
-                    outDayTotal.setTextFill(javafx.scene.paint.Color.RED);
+                    outDayTotal.setTextFill(javafx.scene.paint.Color.WHITE);
                     dayTotal.getChildren().add(outDayTotal);
                     dayTotal.getChildren().add(new Label("                     "));
                     Label inDayTotal = new Label("入：" + String.valueOf(billDay.getDayTotalIn()));
                     //设置粗体及字号及颜色
                     inDayTotal.setStyle("-fx-font-weight: bold; -fx-font-size: 16px; -fx-padding: 0 10px;");
-                    inDayTotal.setTextFill(javafx.scene.paint.Color.RED);
+                    inDayTotal.setTextFill(javafx.scene.paint.Color.WHITE);
                     dayTotal.getChildren().add(inDayTotal);
 
                     borderPane.setTop(dayTotal);
@@ -338,7 +338,7 @@ public class BillController {
                     for (BillDetail billDetail : observableBillList) {
                         //每一行账单
                         BorderPane billView = new BorderPane();
-                        billView.setStyle("-fx-padding: 10px; -fx-background-color: white; -fx-border-color: #EEEEEE; -fx-border-width: 0 0 1 0;");
+                        billView.setStyle("-fx-padding: 10px; -fx-background-color: #2E7D32; -fx-border-color: #388E3C; -fx-border-width: 0 0 1 0;");
                         
                         //图标
                         javafx.scene.image.ImageView iconView = new ImageView(new Image(getClass().getResource("/img/" + billDetail.getIcon() + ".png").toExternalForm()));
@@ -351,9 +351,9 @@ public class BillController {
                         VBox billType = new VBox();
                         billType.setSpacing(5);
                         Label typeLabel = new Label(billDetail.getBillType().concat("   ").concat(billDetail.getBillTime()));
-                        typeLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;");
+                        typeLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: bold;-fx-text-fill:white;");
                         Label descLabel = new Label(billDetail.getDesc());
-                        descLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #666666;");
+                        descLabel.setStyle("-fx-font-size: 12px; -fx-text-fill: #E8F5E9;");
                         billType.getChildren().addAll(typeLabel, descLabel);
                         billView.setCenter(billType);
                         
@@ -364,7 +364,7 @@ public class BillController {
                         Double my = billDetail.getMoney();
                         Label billMoney = new Label(String.valueOf(billDetail.getMoney()));
                         billMoney.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: " + 
-                            (my < 0 ? "#FF4444" : "#44BB44") + ";");
+                            (my < 0 ? "#FF6B6B" : "#81C784") + ";");
                         money.getChildren().add(billMoney);
                         
                         HBox buttons = new HBox();
@@ -414,14 +414,20 @@ public class BillController {
                     setGraphic(borderPane);
                     
                     // 设置选中效果
-                    setStyle("-fx-background-color: transparent;");
+                    setStyle("-fx-background-color: #2E7D32;");
                     setOnMouseEntered(e -> {
-                        setStyle("-fx-background-color: #F5F5F5;");
-                        dayTotal.setStyle("-fx-padding: 10px; -fx-background-color: #E8F5E9; -fx-border-color: #C8E6C9; -fx-border-width: 0 0 1 0;");
+                        setStyle("-fx-background-color: #388E3C;");
+                        dayTotal.setStyle("-fx-padding: 10px; -fx-background-color: #1B5E20; -fx-border-color: #388E3C; -fx-border-width: 0 0 1 0;");
+                        billDate.setTextFill(javafx.scene.paint.Color.WHITE);
+                        outDayTotal.setTextFill(javafx.scene.paint.Color.WHITE);
+                        inDayTotal.setTextFill(javafx.scene.paint.Color.WHITE);
                     });
                     setOnMouseExited(e -> {
-                        setStyle("-fx-background-color: transparent;");
-                        dayTotal.setStyle("-fx-padding: 10px; -fx-background-color: #E8F5E9; -fx-border-color: #C8E6C9; -fx-border-width: 0 0 1 0;");
+                        setStyle("-fx-background-color: #2E7D32;");
+                        dayTotal.setStyle("-fx-padding: 10px; -fx-background-color: #1B5E20; -fx-border-color: #388E3C; -fx-border-width: 0 0 1 0;");
+                        billDate.setTextFill(javafx.scene.paint.Color.WHITE);
+                        outDayTotal.setTextFill(javafx.scene.paint.Color.WHITE);
+                        inDayTotal.setTextFill(javafx.scene.paint.Color.WHITE);
                     });
                 }
             }

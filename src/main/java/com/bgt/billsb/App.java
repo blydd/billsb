@@ -25,16 +25,40 @@ public class App extends Application{
     @Override
     public void start(Stage stage) throws IOException {
         // 创建 TabPane
-       TabPane tabPane = new TabPane();
-       // 创建三个 Tab 并添加到 TabPane 中
-       Tab tab1 = createTab("明细", "/com/bgt/billsb/bill.fxml");
-       Tab tab2 = createTab("统计", "/com/bgt/billsb/statistics.fxml");
-       Tab tab3 = createTab("设置", "/com/bgt/billsb/setup.fxml");
-       tabPane.getTabs().addAll(tab1, tab2, tab3);
-       Scene scene = new Scene(tabPane, 1000, 900);
+        TabPane tabPane = new TabPane();
+        
+        // 禁用标签关闭按钮
+        tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
 
+        // 创建三个 Tab 并添加到 TabPane 中
+        Tab tab1 = createTab("明细", "/com/bgt/billsb/bill.fxml");
+        Tab tab2 = createTab("统计", "/com/bgt/billsb/statistics.fxml");
+        Tab tab3 = createTab("设置", "/com/bgt/billsb/setup.fxml");
+        
+        // 设置Tab的宽度
+        tabPane.setTabMinWidth(333);  // 设置最小宽度为窗口宽度的三分之一
+        tabPane.setTabMaxWidth(333);  // 设置最大宽度相同，强制固定宽度
+        
+        // 基础样式
+        tabPane.setStyle(
+            ".tab-pane .tab-header-area .tab-header-background {" +
+            "    -fx-background-color: #f4f4f4;" +
+            "}" +
+            ".tab-pane .tab:selected {" +
+            "    -fx-background-color: #e0e0e0;" +
+            "}"
+        );
 
-      
+        tabPane.getTabs().addAll(tab1, tab2, tab3);
+        Scene scene = new Scene(tabPane, 1000, 900);
+        
+        // 监听窗口宽度变化
+        scene.widthProperty().addListener((obs, oldVal, newVal) -> {
+            double width = newVal.doubleValue();
+            double tabWidth = width / 3.0;
+            tabPane.setTabMinWidth(tabWidth);
+            tabPane.setTabMaxWidth(tabWidth);
+        });
 
         stage.setTitle("记账本!");
         stage.setScene(scene);

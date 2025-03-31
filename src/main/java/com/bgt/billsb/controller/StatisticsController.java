@@ -166,33 +166,50 @@ public class StatisticsController {
                 final int currentIndex = colorIndex; // 创建 final 变量以在 lambda 中使用
                 d.nodeProperty().addListener((ov, oldNode, node) -> {
                     if (node != null) {
-                        // 设置柱子颜色
-                        String color = colors[currentIndex % colors.length];
-                        node.setStyle("-fx-bar-fill: " + color + ";");
-                        
-                        // 创建数值标签
-                        Label label = new Label(String.format("%.2f", d.getYValue()));
-                        label.setStyle(
-                            "-fx-font-size: 11px;" +
-                            "-fx-font-weight: bold;" +
-                            "-fx-text-fill: #666666;"
-                        );
-                        
                         try {
-                            // 将标签添加到柱子上方
-                            if (node.getParent() instanceof Group) {
-                                ((Group) node.getParent()).getChildren().add(label);
-                                System.out.println("成功添加标签到柱子: " + d.getXValue());
-                            } else {
-                                System.out.println("节点父类型不是 Group: " + node.getParent().getClass());
+                            // 设置柱子颜色
+                            String color = colors[currentIndex % colors.length];
+                            node.setStyle("-fx-bar-fill: " + color + ";");
+                            System.out.println("成功设置柱子颜色: " + color + " 对应数据: " + entry.getKey());
+                            
+                            // 创建数值标签
+                            Label label = new Label(String.format("%.2f", d.getYValue()));
+                            label.setStyle(
+                                "-fx-font-size: 11px;" +
+                                "-fx-font-weight: bold;" +
+                                "-fx-text-fill: #666666;"
+                            );
+                            System.out.println("创建标签成功，值为: " + d.getYValue());
+                            
+                            try {
+                                // 将标签添加到柱子上方
+                                if (node.getParent() instanceof Group) {
+                                    ((Group) node.getParent()).getChildren().add(label);
+                                    System.out.println("成功添加标签到柱子: " + d.getXValue());
+                                } else {
+                                    System.out.println("节点父类型不是 Group，实际类型: " + 
+                                        (node.getParent() != null ? node.getParent().getClass().getName() : "null"));
+                                }
+                            } catch (Exception e) {
+                                System.err.println("添加标签时发生异常:");
+                                System.err.println("- 异常类型: " + e.getClass().getName());
+                                System.err.println("- 异常消息: " + e.getMessage());
+                                System.err.println("- 节点信息:");
+                                System.err.println("  * 节点类型: " + (node != null ? node.getClass().getName() : "null"));
+                                System.err.println("  * 父节点类型: " + (node.getParent() != null ? 
+                                    node.getParent().getClass().getName() : "null"));
+                                System.err.println("  * 数据值: " + d.getYValue());
+                                System.err.println("  * 数据键: " + d.getXValue());
+                                e.printStackTrace();
                             }
                         } catch (Exception e) {
-                            e.printStackTrace(); // 打印完整的堆栈跟踪
-                            System.err.println("添加标签失败: " + e.getMessage() + 
-                                             "\n节点类型: " + (node != null ? node.getClass() : "null") +
-                                             "\n父节点类型: " + (node != null && node.getParent() != null ? 
-                                                             node.getParent().getClass() : "null"));
+                            System.err.println("设置柱子样式时发生异常:");
+                            System.err.println("- 异常类型: " + e.getClass().getName());
+                            System.err.println("- 异常消息: " + e.getMessage());
+                            e.printStackTrace();
                         }
+                    } else {
+                        System.err.println("节点为空，对应数据: " + entry.getKey());
                     }
                 });
                 colorIndex++;

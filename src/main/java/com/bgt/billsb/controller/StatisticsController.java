@@ -13,6 +13,7 @@ import javafx.geometry.Side;
 import javafx.scene.Node;
 import javafx.scene.chart.*;
 import javafx.scene.control.*;
+import javafx.scene.Group;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -75,7 +76,8 @@ public class StatisticsController {
      * 加载统计图数据
      */
     public void loadData() {
-        System.out.println("StatisticsController.loadData..........加载图表数据");
+        System.out.println("开始加载数据...");
+        
         /**组装支出数据,按账单类别统计*/
         Map<String, Double> groupByTypeOut = datas.stream()
                 .flatMap(b -> b.getBillDetailList().stream().filter(b1 -> Objects.equals(1, b1.getInout())))
@@ -124,13 +126,19 @@ public class StatisticsController {
         List<Map.Entry<String, Double>> collect = groupByPayTypeOut.entrySet().stream().sorted(Map.Entry.<String, Double>comparingByValue().reversed()).collect(Collectors.toList());
         // 创建 x 轴和 y 轴
         CategoryAxis xAxis = new CategoryAxis();
-        xAxis.setLabel("卡");
+        xAxis.setLabel("支付方式");
 
         NumberAxis yAxis = new NumberAxis();
-        yAxis.setLabel("钱");
+        yAxis.setLabel("金额");
 
-        // 使用类级别的 @FXML 定义的 barChart
-        barChart.setData(FXCollections.observableArrayList()); // 清空原有数据
+        // 设置柱状图样式
+        barChart.setStyle(
+            "-fx-background-color: transparent;" + 
+            "-fx-padding: 10px;"
+        );
+        
+        // 清空并设置数据
+        barChart.setData(FXCollections.observableArrayList());
         barChart.setTitle("支付方式统计");
 
         // 创建数据系列
@@ -138,19 +146,65 @@ public class StatisticsController {
         series.setName(billlMonthStr);
 
         if (groupByPayTypeOut != null) {
+            System.out.println("支付方式数据: " + groupByPayTypeOut);
+            
             ObservableList<XYChart.Data<String, Double>> dataSeries = FXCollections.observableArrayList();
-            collect.forEach((enrty) -> {
-                    XYChart.Data<String, Double> d = new XYChart.Data<>(enrty.getKey(),enrty.getValue());
-                    dataSeries.add(d);
-                    //设置悬浮值
-            });
-            series.setData(dataSeries); // 设置数据
+            // 定义不同的颜色
+            String[] colors = {
+                "#FF6B6B", "#4ECDC4", "#45B7D1", "#96CEB4", 
+                "#FFEEAD", "#D4A5A5", "#9B59B6", "#3498DB",
+                "#E67E22", "#2ECC71"
+            };
+            
+            int colorIndex = 0;
+            for (Map.Entry<String, Double> entry : collect) {
+                System.out.println("处理数据: " + entry.getKey() + " = " + entry.getValue());
+                XYChart.Data<String, Double> d = new XYChart.Data<>(entry.getKey(), entry.getValue());
+                dataSeries.add(d);
+                
+                // 设置每个柱子的颜色和数值标签
+                final int currentIndex = colorIndex; // 创建 final 变量以在 lambda 中使用
+                d.nodeProperty().addListener((ov, oldNode, node) -> {
+                    if (node != null) {
+                        // 设置柱子颜色
+                        String color = colors[currentIndex % colors.length];
+                        node.setStyle("-fx-bar-fill: " + color + ";");
+                        
+                        // 创建数值标签
+                        Label label = new Label(String.format("%.2f", d.getYValue()));
+                        label.setStyle(
+                            "-fx-font-size: 11px;" +
+                            "-fx-font-weight: bold;" +
+                            "-fx-text-fill: #666666;"
+                        );
+                        
+                        try {
+                            // 将标签添加到柱子上方
+                            if (node.getParent() instanceof Group) {
+                                ((Group) node.getParent()).getChildren().add(label);
+                                System.out.println("成功添加标签到柱子: " + d.getXValue());
+                            } else {
+                                System.out.println("节点父类型不是 Group: " + node.getParent().getClass());
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace(); // 打印完整的堆栈跟踪
+                            System.err.println("添加标签失败: " + e.getMessage() + 
+                                             "\n节点类型: " + (node != null ? node.getClass() : "null") +
+                                             "\n父节点类型: " + (node != null && node.getParent() != null ? 
+                                                             node.getParent().getClass() : "null"));
+                        }
+                    }
+                });
+                colorIndex++;
+            }
+            series.setData(dataSeries);
         }
+        
         // 将系列添加到图表
         barChart.getData().add(series);
-
-
-                
+        
+        // 移除系列的默认颜色
+        barChart.setLegendVisible(false);
     }
 
 

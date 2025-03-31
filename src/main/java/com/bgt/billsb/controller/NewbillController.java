@@ -212,15 +212,16 @@ public class NewbillController implements Initializable {
             alert.setContentText("请选择支付方式!");
             alert.show();
             return;
+            
         }else if (newBill.getInout() != 1 && Objects.isNull(selectedPayTypeVBox)) {
             //支出时 支付方式
                 Optional<PayTypeVo> firstMatch = this.payTypeList.stream()
-                        .filter(pt -> pt.getPayAccountName().equals(this.selectedPayTypeVBox.getChildren().get(0).toString()))
+                        .filter(pt -> pt.getPayAccountName().equals(((Label)(this.selectedPayTypeVBox.getChildren().get(0))).getText()))
                         .findFirst();
-                firstMatch.ifPresent(pt -> newBill.setPayTypeId(pt.getId()));
 
                 firstMatch.ifPresentOrElse(
                         pt -> {
+                            newBill.setPayTypeId(pt.getId());
                             String payAccountName = (pt.getPayAccountName() != null) ? pt.getPayAccountName() : "";
                             // 使用 + 操作符优化字符串拼接
                             newBill.setDesc(payAccountName + " " + this.remark.getText());
@@ -233,13 +234,13 @@ public class NewbillController implements Initializable {
         }else if (newBill.getInout() == 1 && Objects.nonNull(selectedPayTypeVBox)) {
             //支出时 支付方式
                 Optional<PayTypeVo> firstMatch = this.payTypeList.stream()
-                        .filter(pt -> pt.getPayAccountName().equals(this.selectedPayTypeVBox.getChildren().get(0).toString()))
+                        .filter(pt -> pt.getPayAccountName().equals(((Label)(this.selectedPayTypeVBox.getChildren().get(0))).getText()))
                         .findFirst();
-                firstMatch.ifPresent(pt -> newBill.setPayTypeId(pt.getId()));
 
                 //把支付方式添加到备注中
                 firstMatch.ifPresentOrElse(
                         pt -> {
+                            newBill.setPayTypeId(pt.getId());
                             // 空值检查，避免 NullPointerException
                             String payAccountName = (pt.getPayAccountName() != null) ? pt.getPayAccountName() : "";
                             // 使用 + 操作符优化字符串拼接
@@ -283,7 +284,7 @@ public class NewbillController implements Initializable {
         //账单创建时间
         newBill.setBillTime(this.billTime.getValue().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))+" "+DataUtil.addZero(this.hour.getValue().toString(),2)+":"+ DataUtil.addZero(this.min.getValue().toString(),2) + ":" + DataUtil.addZero(this.sec.getValue().toString(),2));
         newBill.setCreateTime(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-
+        System.out.println("newBill:"+newBill);
         if (Objects.nonNull(newBill.getId())){
             billService.updateBill(newBill);
         }else {
